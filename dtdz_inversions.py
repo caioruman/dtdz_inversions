@@ -67,7 +67,7 @@ def replace_nan(data):
 
     return data
 
-def calc_dtdz(deltaT_lvl, deltaT, count, freq, count_bool, count_n):
+def calc_dtdz(deltaT_lvl, deltaT, count, m_deltaT, count_bool, count_n):
     # only using points were there are inversions
     count_bool_inv = np.less_equal(deltaT, 0)   
     aux = deltaT.copy()*np.nan
@@ -79,6 +79,15 @@ def calc_dtdz(deltaT_lvl, deltaT, count, freq, count_bool, count_n):
 
     count_l = np.count_nonzero(count_bool_lvl.astype(np.int), axis=0)
     count_g = np.count_nonzero(count_bool_lvl_g.astype(np.int), axis=0)
+   
+    count_bool_dt = np.greater(m_deltaT, 0)
+    aux = m_deltaT.copy()*np.nan
+    count_l = count_l.astype(np.float64)
+    count_g = count_g.astype(np.float64)
+
+    np.copyto(count_l, aux, where=~count_bool_dt)
+    np.copyto(count_g, aux, where=~count_bool_dt)
+
 
     # Frequency of each type
     freq_l = (count - count_l)/count_n
@@ -108,7 +117,7 @@ def inversion_calculations(base_level_tt, top_level_tt, level975, level950):
     delta_T_bottom = level975 - base_level_tt
 
     # 950 - 925
-    delta_T_middle = level950 - level950
+    delta_T_middle = level950 - level975
 
     len_time = float(deltaT.shape[0])
 
@@ -120,12 +129,18 @@ def inversion_calculations(base_level_tt, top_level_tt, level975, level950):
     # mean of deltaT
     aux = deltaT.copy()*np.nan
     count_bool = np.less_equal(deltaT, 0)
-    np.copyto(deltaT, aux, where=count_bool)
+    np.copyto(deltaT, aux, where=count_bool)    
     mean_deltaT = np.nanmean(deltaT, axis=0)
 
-    freq_bot, freq_bot_g, mean_deltaT_bottom, mean_deltaT_bottom_g = calc_dtdz(delta_T_bottom, deltaT, count, frequency, count_bool, len_time)
-    freq_mid, freq_mid_g, mean_deltaT_middle, mean_deltaT_middle_g = calc_dtdz(delta_T_middle, deltaT, count, frequency, count_bool, len_time)
-    freq_top, freq_top_g, mean_deltaT_top, mean_deltaT_top_g = calc_dtdz(delta_T_top, deltaT, count, frequency, count_bool, len_time)
+    # applying the true/false field to the levels
+    np.copyto(delta_T_top, aux, where=count_bool)
+    np.copyto(delta_T_bottom, aux, where=count_bool)
+    np.copyto(delta_T_middle, aux, where=count_bool)
+
+
+    freq_bot, freq_bot_g, mean_deltaT_bottom, mean_deltaT_bottom_g = calc_dtdz(delta_T_bottom, deltaT, count, mean_deltaT, count_bool, len_time)
+    freq_mid, freq_mid_g, mean_deltaT_middle, mean_deltaT_middle_g = calc_dtdz(delta_T_middle, deltaT, count, mean_deltaT, count_bool, len_time)
+    freq_top, freq_top_g, mean_deltaT_top, mean_deltaT_top_g = calc_dtdz(delta_T_top, deltaT, count, mean_deltaT, count_bool, len_time)
 
 
     mean_dt_time = []

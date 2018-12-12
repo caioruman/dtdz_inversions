@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --time=4:00:00
+#SBATCH --time=2:00:00
 #SBATCH --account=def-sushama
 #SBATCH --mem-per-cpu=4096M      # memory; default unit is megabytes
 #SBATCH --cpus-per-task=1
@@ -21,7 +21,7 @@ sleep 30
 
 # launch the script
 
-python dcycle_inversions.py 
+python dtdz_inversions.py 
 
 # in_nc_file=/home/poitras/ddm/directions_WestCaUs_dx0.11deg.nc3
 # out_fst_file=/scratch/huziy/directions_WestCaUs_dx0.11deg.fst

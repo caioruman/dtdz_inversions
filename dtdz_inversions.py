@@ -38,7 +38,7 @@ Check:
 '''
 
 
-datai = 2015
+datai = 1986
 dataf = 2015
 
 # simulation
@@ -123,100 +123,9 @@ def inversion_calculations(base_level_tt, top_level_tt, level975, level950):
     np.copyto(deltaT, aux, where=count_bool)
     mean_deltaT = np.nanmean(deltaT, axis=0)
 
-    freq
-
-    #Count the number of grid points where there are no inversions ( less equal 0)
-    count_bool = np.less_equal(delta_T, 0)
-    count = np.count_nonzero(count_bool.astype(np.int), axis=0)
-
-    print(count)
-    sys.exit()
-  
-    frequency = count/len_time
-
-    aux = delta_T.copy()*np.nan
-
-    # Put everything from bellow in an external function and eliminate all that repetition
-    # Only using value where there is an inversion between 925 and 1000 hPa
-    np.copyto(delta_T_top, aux, where=count_bool)
-    np.copyto(delta_T_bottom, aux, where=count_bool)
-    np.copyto(delta_T_middle, aux, where=count_bool)
-    np.copyto(delta_T, aux, where=count_bool)
-
-    # Counting the frequency of each
-    count_bool_bot = np.less_equal(delta_T_bottom, 0)
-    count_bool_mid = np.less_equal(delta_T_middle, 0)
-    count_bool_top = np.less_equal(delta_T_top, 0)
-
-    count_bool_bot_g = np.greater(delta_T_bottom, 0)
-    count_bool_mid_g = np.greater(delta_T_middle, 0)
-    count_bool_top_g = np.greater(delta_T_top, 0)
-
-    count_bot = np.count_nonzero(count_bool_bot.astype(np.int), axis=0)
-    count_mid = np.count_nonzero(count_bool_mid.astype(np.int), axis=0)
-    count_top = np.count_nonzero(count_bool_top.astype(np.int), axis=0)
-
-    count_bot_g = np.count_nonzero(count_bool_bot_g.astype(np.int), axis=0)
-    count_mid_g = np.count_nonzero(count_bool_mid_g.astype(np.int), axis=0)
-    count_top_g = np.count_nonzero(count_bool_top_g.astype(np.int), axis=0)
-
-    freq_bot = count_bot/count
-    freq_mid = count_mid/count
-    freq_top = count_top/count
-
-    freq_bot_g = count_bot_g/count
-    freq_mid_g = count_mid_g/count
-    freq_top_g = count_top_g/count
-
-    delta_T_top_g = delta_T_top.copy()
-    delta_T_middle_g = delta_T_middle.copy()
-    delta_T_bottom_g = delta_T_bottom.copy()
-
-    np.copyto(delta_T_top, aux, where=count_bool_top)
-    np.copyto(delta_T_bottom, aux, where=count_bool_bot)
-    np.copyto(delta_T_middle, aux, where=count_bool_mid)
-
-    np.copyto(delta_T_top_g, aux, where=count_bool_top_g)
-    np.copyto(delta_T_middle_g, aux, where=count_bool_mid_g)
-    np.copyto(delta_T_bottom_g, aux, where=count_bool_bot_g)
-
-    mean_deltaT = np.nanmean(delta_T, axis=0)
-    mean_deltaT_bottom = np.nanmean(delta_T_bottom, axis=0)
-    mean_deltaT_middle = np.nanmean(delta_T_middle, axis=0)
-    mean_deltaT_top = np.nanmean(delta_T_top, axis=0)
-
-    mean_deltaT_bottom_g = np.nanmean(delta_T_bottom_g, axis=0)
-    mean_deltaT_middle_g = np.nanmean(delta_T_middle_g, axis=0)
-    mean_deltaT_top_g = np.nanmean(delta_T_top_g, axis=0)
-
-    count_bool = np.greater_equal(mean_deltaT, 0)
-
-    aux = count_bool.copy()*np.nan
-    np.copyto(frequency, aux, where=~count_bool)
-
-    count_bool_bot = np.less_equal(mean_deltaT_bottom, 0)
-    count_bool_mid = np.less_equal(mean_deltaT_middle, 0)
-    count_bool_top = np.less_equal(mean_deltaT_top, 0)
-
-    count_bool_bot_g = np.greater(mean_deltaT_bottom_g, 0)
-    count_bool_mid_g = np.greater(mean_deltaT_middle_g, 0)
-    count_bool_top_g = np.greater(mean_deltaT_top_g, 0)
-
-  #  print(aux.dtype)
- #   print(frequency.dtype)
-#    print(freq_bot.dtype)
-#    print(count_bot.dtype)
-
- #   print(count_bool_bot.shape)
-#    print(aux.shape)
-#    print(freq_bot.shape)
-
-    np.copyto(freq_bot, aux, where=~count_bool_bot)
-    np.copyto(freq_mid, aux, where=~count_bool_mid)
-    np.copyto(freq_top, aux, where=~count_bool_top)
-    np.copyto(freq_bot_g, aux, where=~count_bool_bot_g)
-    np.copyto(freq_mid_g, aux, where=~count_bool_mid_g)
-    np.copyto(freq_top_g, aux, where=~count_bool_top_g)
+    freq_bot, freq_bot_g, mean_deltaT_bottom, mean_deltaT_bottom_g = calc_dtdz(delta_T_bottom, deltaT, count, frequency, count_bool, len_time)
+    freq_mid, freq_mid_g, mean_deltaT_middle, mean_deltaT_middle_g = calc_dtdz(delta_T_middle, deltaT, count, frequency, count_bool, len_time)
+    freq_top, freq_top_g, mean_deltaT_top, mean_deltaT_top_g = calc_dtdz(delta_T_top, deltaT, count, frequency, count_bool, len_time)
 
 
     mean_dt_time = []
@@ -409,6 +318,9 @@ for yy in range(datai, dataf+1):
         mean_deltaT, frequency, mean_deltaT_bottom, freq_bot, mean_deltaT_middle, freq_mid, mean_deltaT_top, freq_top, mean_deltaT_bottom_g, freq_bot_g, mean_deltaT_middle_g, freq_mid_g, mean_deltaT_top_g, freq_top_g = inversion_calculations(tt[0,:,:,:], tt[3,:,:,:], tt[1,:,:,:], tt[2,:,:,:])
 
         fname = "{2}/InversionV2/Inversion_925_1000_ERA_dtdz_{0}{1:02d}.nc".format(yy, mm, main_folder)
+        vars=[("FREQ", frequency), ("DT", mean_deltaT), ("FQ_B", freq_bot), ("DT_B", mean_deltaT_bottom), ("FQ_M", freq_mid), ("DT_M", mean_deltaT_middle),
+              ("FQ_T", freq_top), ("DT_T", mean_deltaT_top), ("FQ_BG", freq_bot_g), ("DT_BG", mean_deltaT_bottom_g), ("FQ_MG", freq_mid_g), ("DT_MG", mean_deltaT_middle_g),
+              ("FQ_TG", freq_top_g), ("DT_TG", mean_deltaT_top_g)]
 #        vars=[("FREQ", mean_fr), ("DT", mean_dt)]
         save_netcdf(fname, vars, datefield, lats2d, lons2d)
         

@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --time=2:00:00
+#SBATCH --time=3:00:00
 #SBATCH --account=def-sushama
 #SBATCH --mem-per-cpu=4096M      # memory; default unit is megabytes
 #SBATCH --cpus-per-task=1

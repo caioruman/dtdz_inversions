@@ -137,6 +137,19 @@ def inversion_calculations(base_level_tt, top_level_tt, level975, level950):
     np.copyto(delta_T_bottom, aux, where=count_bool)
     np.copyto(delta_T_middle, aux, where=count_bool)
 
+    diff = delta_T_top - delta_T_bottom
+    count_diff_bool = np.greater(diff, 0)
+    count_diff = np.count_nonzero(count_diff_bool.astype(np.int), axis=0)
+
+#    count_nan = ~np.isnan(deltaT)
+#    count_diff_n = np.count_nonzero(count_nan.astype(np.int), axis=0)
+    
+#    print(count_diff)
+#    print(count)
+#    sys.exit()
+    freq_diff = count_diff/count
+    mean_diff = np.nanmean(diff, axis=0)
+
 
     freq_bot, freq_bot_g, mean_deltaT_bottom, mean_deltaT_bottom_g = calc_dtdz(delta_T_bottom, deltaT, count, mean_deltaT, count_bool, len_time)
     freq_mid, freq_mid_g, mean_deltaT_middle, mean_deltaT_middle_g = calc_dtdz(delta_T_middle, deltaT, count, mean_deltaT, count_bool, len_time)
@@ -171,7 +184,7 @@ def inversion_calculations(base_level_tt, top_level_tt, level975, level950):
 #
 
 #    return mean_dt_time, mean_fr_time
-    return mean_deltaT, frequency, mean_deltaT_bottom, freq_bot, mean_deltaT_middle, freq_mid, mean_deltaT_top, freq_top, mean_deltaT_bottom_g, freq_bot_g, mean_deltaT_middle_g, freq_mid_g, mean_deltaT_top_g, freq_top_g
+    return mean_deltaT, frequency, mean_deltaT_bottom, freq_bot, mean_deltaT_middle, freq_mid, mean_deltaT_top, freq_top, mean_deltaT_bottom_g, freq_bot_g, mean_deltaT_middle_g, freq_mid_g, mean_deltaT_top_g, freq_top_g, mean_diff, freq_diff
 
 
 
@@ -314,14 +327,14 @@ for yy in range(datai, dataf+1):
 
  #       mean_dt, mean_fr = inversion_calculations(tt_dm, tt[3,:,:,:], tt[1,:,:,:], tt[2,:,:,:])
 
-        mean_deltaT, frequency, mean_deltaT_bottom, freq_bot, mean_deltaT_middle, freq_mid, mean_deltaT_top, freq_top, mean_deltaT_bottom_g, freq_bot_g, mean_deltaT_middle_g, freq_mid_g, mean_deltaT_top_g, freq_top_g = inversion_calculations(tt_dm, tt[3,:,:,:], tt[1,:,:,:], tt[2,:,:,:])
+        mean_deltaT, frequency, mean_deltaT_bottom, freq_bot, mean_deltaT_middle, freq_mid, mean_deltaT_top, freq_top, mean_deltaT_bottom_g, freq_bot_g, mean_deltaT_middle_g, freq_mid_g, mean_deltaT_top_g, freq_top_g, mean_diff, freq_diff = inversion_calculations(tt_dm, tt[3,:,:,:], tt[1,:,:,:], tt[2,:,:,:])
         datefield = datetime(yy, mm, 1, 0, 0, 0)
 
         #outFILE = RPN("{2}/Inversion/Inversion_925_ERA_{0}{1:02d}v2.rpn".format(yy, mm, main_folder), mode="w")
         fname = "{2}/InversionV2/Inversion_925_ERA_dtdz_{0}{1:02d}.nc".format(yy, mm, main_folder)
         vars=[("FREQ", frequency), ("DT", mean_deltaT), ("FQ_B", freq_bot), ("DT_B", mean_deltaT_bottom), ("FQ_M", freq_mid), ("DT_M", mean_deltaT_middle),
               ("FQ_T", freq_top), ("DT_T", mean_deltaT_top), ("FQ_BG", freq_bot_g), ("DT_BG", mean_deltaT_bottom_g), ("FQ_MG", freq_mid_g), ("DT_MG", mean_deltaT_middle_g),
-              ("FQ_TG", freq_top_g), ("DT_TG", mean_deltaT_top_g)]
+              ("FQ_TG", freq_top_g), ("DT_TG", mean_deltaT_top_g), ("FQ_DIF", freq_diff), ("DT_DIF", mean_diff)]
         save_netcdf(fname, vars, datefield, lats2d, lons2d)
 
 #        mean_dz, mean_deltaT, frequency, mean_deltaT_rad, frequency_rad, mean_deltaT_cloud, frequency_cloud, lw_cl_net, lw_cl_toa, lw_cl_down = inversion_calculations(base_level, top_level, tt[0,:,:,:], tt[3,:,:,:], lw_net, lw_toa, lw_down, cloud_cover)
@@ -330,12 +343,12 @@ for yy in range(datai, dataf+1):
 
 #        mean_dt, mean_fr = inversion_calculations(tt[0,:,:,:], tt[3,:,:,:], tt[1,:,:,:], tt[2,:,:,:])
 
-        mean_deltaT, frequency, mean_deltaT_bottom, freq_bot, mean_deltaT_middle, freq_mid, mean_deltaT_top, freq_top, mean_deltaT_bottom_g, freq_bot_g, mean_deltaT_middle_g, freq_mid_g, mean_deltaT_top_g, freq_top_g = inversion_calculations(tt[0,:,:,:], tt[3,:,:,:], tt[1,:,:,:], tt[2,:,:,:])
+        mean_deltaT, frequency, mean_deltaT_bottom, freq_bot, mean_deltaT_middle, freq_mid, mean_deltaT_top, freq_top, mean_deltaT_bottom_g, freq_bot_g, mean_deltaT_middle_g, freq_mid_g, mean_deltaT_top_g, freq_top_g, mean_diff, freq_diff  = inversion_calculations(tt[0,:,:,:], tt[3,:,:,:], tt[1,:,:,:], tt[2,:,:,:])
 
         fname = "{2}/InversionV2/Inversion_925_1000_ERA_dtdz_{0}{1:02d}.nc".format(yy, mm, main_folder)
         vars=[("FREQ", frequency), ("DT", mean_deltaT), ("FQ_B", freq_bot), ("DT_B", mean_deltaT_bottom), ("FQ_M", freq_mid), ("DT_M", mean_deltaT_middle),
               ("FQ_T", freq_top), ("DT_T", mean_deltaT_top), ("FQ_BG", freq_bot_g), ("DT_BG", mean_deltaT_bottom_g), ("FQ_MG", freq_mid_g), ("DT_MG", mean_deltaT_middle_g),
-              ("FQ_TG", freq_top_g), ("DT_TG", mean_deltaT_top_g)]
+              ("FQ_TG", freq_top_g), ("DT_TG", mean_deltaT_top_g), ("FQ_DIF", freq_diff), ("DT_DIF", mean_diff)]
 #        vars=[("FREQ", mean_fr), ("DT", mean_dt)]
         save_netcdf(fname, vars, datefield, lats2d, lons2d)
         

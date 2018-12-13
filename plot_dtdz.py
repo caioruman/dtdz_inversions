@@ -15,8 +15,8 @@ from mpl_toolkits.basemap import Basemap
 from mpl_toolkits.basemap import maskoceans
 from netCDF4 import Dataset
 
-from rpn.rpn import RPN
-from rpn.domains.rotated_lat_lon import RotatedLatLon
+#from rpn.rpn import RPN
+#from rpn.domains.rotated_lat_lon import RotatedLatLon
 
 
 def plotMaps_pcolormesh(data, figName, values, mapa, lons2d, lats2d, stations, var):
@@ -79,6 +79,7 @@ exp = "PanArctic_0.5d_ERAINT_NOCTEM_RUN"
 #exp = "PanArctic_0.5d_CanHisto_NOCTEM_RUN"
 
 main_folder = "/home/cruman/scratch/glacier2/GEM/Output/{0}".format(exp) #PanArctic_0.5d_ERAINT_NOCTEM_RUN/InversionV2/"
+main_folder = "/home/caioruman/Documents/McGill/NC/dtdz/"
 
 #r_MF = RPN("/home/cruman/scratch/glacier/Data/Geophys/PanArctic0.5/pan_artic_mf_0.5")
 
@@ -88,12 +89,13 @@ main_folder = "/home/cruman/scratch/glacier2/GEM/Output/{0}".format(exp) #PanArc
 #r_MF.close()
 
 # Sounding Data
-sounding_file = "/home/cruman/project/cruman/Scripts/soundings/inv_list_DJF.dat"
+#sounding_file = "/home/cruman/project/cruman/Scripts/soundings/inv_list_DJF.dat"
 
 period = ["DJF", "JJA", 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Nov', 'Dec']
 period = ["DJF", "JJA", "JFM", "JAS"]
 varlist = ["DZ", "FREQ", "ZBAS", "DT", "DQ"]
 varlist = ["DT_T", "DT_B", "DT", "FREQ", "FQ_T", "FQ_B", "DT_TG", "DT_BG", "deltaT"]
+varlist = ["FQ_DIF"]
 #height = [925, 900, 850]
 height = ["925_1000"]
 
@@ -105,7 +107,9 @@ for per in period:
 
         #read file
         #Inversion_925_1000_ERA_DJF_1986-2015.nc
-        file = "{2}/InversionV2/dtdz/Inversion_{0}_ERA_dtdz_{1}_{3}-{4}.nc".format(h, per, main_folder, datai, dataf)
+        #file = "{2}/InversionV2/dtdz/Inversion_{0}_ERA_dtdz_{1}_{3}-{4}.nc".format(h, per, main_folder, datai, dataf)
+        file = "{4}/Inversion_{0}_ERA_dtdz_{1}_{2}-{3}.nc".format(h, per, datai, dataf, main_folder)
+
         print(file)
 
         arq = Dataset(file, 'r')
@@ -123,8 +127,8 @@ for per in period:
             #figName = "{0}_testeSummer".format(var)
 
             #open station file
-            sta = open('/home/cruman/project/cruman/Scripts/soundings/inv_list_{0}.dat'.format(per), 'r')
-            
+            #sta = open('/home/cruman/project/cruman/Scripts/soundings/inv_list_{0}.dat'.format(per), 'r')
+
             stations = []
 #            for line in sta:
 #                aa = line.replace("''", '').split(';')
@@ -132,7 +136,7 @@ for per in period:
 #                    continue
 
                 #Station_number;Latitude;Longitude;Inv_00;Inv_P_00;Inv_12;Inv_P_12;Inv_TT;Inv_P_TT;TotalYear;TotalYearTT
-#                if var == "FQR12" or var == "DT12":                    
+#                if var == "FQR12" or var == "DT12":
                     #ksksk
                     #stations.append((float(aa[1]),float(aa[2]),float(aa[5]),float(aa[6])))
 #                    stations.append((float(aa[1]),float(aa[2]),float(aa[3]),float(aa[4])))
@@ -144,14 +148,14 @@ for per in period:
                     #asdasd
 #                    stations.append((float(aa[1]),float(aa[2]),float(aa[7]),float(aa[8])))
 
-            sta.close()
+            #sta.close()
 
 
             #
             if var == "DZ" or var == "ZBAS":
                 values = np.arange(0,1001,100)
                 colors = ['#ffffff', '#ffffd9','#edf8b1','#c7e9b4','#7fcdbb','#41b6c4','#1d91c0','#225ea8','#253494','#081d58']
-            elif var == "FREQ" or var == "FQ_B" or var == "FQ_T":
+            elif var == "FREQ" or var == "FQ_B" or var == "FQ_T" or var == "FQ_DIF":
                 # Wrong calculation in the algorigtm, must subtract from 100
                 values = np.arange(0,101,10)
                 #line_colors = cmap(np.linspace(0,100,10))
@@ -159,11 +163,11 @@ for per in period:
                 #cmap2 = ListedColormap(line_colors)
                 #data = (1- data)*100
                 data = data*100
-                if var != "FREQ":
-                    # read FREQ
-                    freq = np.squeeze(arq.variables['FREQ'][:])*100
-                    data = data*100/freq
-                    
+                #if var != "FREQ":
+                #    # read FREQ
+                #    freq = np.squeeze(arq.variables['FREQ'][:])*100
+                #    data = data*100/freq
+
 
                 #colors = ['#ffffff', '#ffffd9','#edf8b1','#c7e9b4','#7fcdbb','#41b6c4','#1d91c0','#225ea8','#253494','#081d58']
                 #colors = ['#ffffff','#ffffe5','#fff7bc','#fee391','#fec44f','#fe9929','#ec7014','#cc4c02','#993404','#662506']
@@ -174,9 +178,9 @@ for per in period:
                 data2 = np.squeeze(arq.variables["DT_B"][:])
 
                 data = data - data2
-                values = np.arange(-6,7,1)                
+                values = np.arange(-6,7,1)
                 colors = ['#a50026', '#d73027', '#f46d43', '#fdae61', '#fee090', "#ffffff", "#ffffff", '#e0f3f8', '#abd9e9', '#74add1', '#4575b4', '#313695']
-            
+
             else:
                 values = np.arange(-12,13,2)
                 values = np.arange(0,22,2)

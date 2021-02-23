@@ -15,6 +15,7 @@ from rpn import level_kinds
 
 from netCDF4 import Dataset
 import time
+import pickle
 
 from pathlib import Path
 
@@ -150,9 +151,9 @@ def main():
             deltaT_925, dtdz_925, frequency_925, deltaT_850, dtdz_850, frequency_850 = inversion_calculations(tt_dm, tt[3,:,:,:], tt[5,:,:,:], gz[3,:,:,:], gz[5,:,:,:])
             
             len_time = float(deltaT_925.shape[0])
-            print(deltaT_925.shape)
-            print(dtdz_925.shape)
-            print(frequency_925.shape)
+            print(deltaT_925)
+            print(dtdz_925)
+            print(frequency_925)
 
             fname = "{2}/{0}/Inversion_{0}{1:02d}.nc".format(yy, mm, output_folder)
             Path("{0}/{1}".format(output_folder, yy)).mkdir(parents=True, exist_ok=True)
@@ -276,7 +277,7 @@ def save_netcdf(fname, vars, datefield, lat, lon, tempo):
     # same data is written for each record.
     for var in vars:
 
-        var_nc = ncfile.createVariable(var[0], np.dtype('float32').char, ('time', 'y', 'x'))
+        var_nc = ncfile.createVariable(var[0], np.dtype('float32').char, dimension=var.shape, ('time', 'y', 'x'))
         var_nc.units = "some unit"
         var_nc.coordinates = "lat lon"
         var_nc.grid_desc = "rotated_pole"

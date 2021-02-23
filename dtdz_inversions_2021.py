@@ -290,14 +290,15 @@ def save_netcdf(fname, vars, datefield, lat, lon, tempo):
     # write data to variables along record (unlimited) dimension.
     # same data is written for each record.
     for var in vars:
-
+        print(var[1].shape)
+        print(var[0])
         var_nc = ncfile.createVariable(var[0], np.dtype('float32').char, ('time', 'y', 'x'))
         var_nc.units = "some unit"
         var_nc.coordinates = "lat lon"
         var_nc.grid_desc = "rotated_pole"
         var_nc.cell_methods = "time: point"
         var_nc.missing_value = np.nan
-        var_nc[:] = var[1]
+        var_nc[:,:,:] = var[1]
 
     # close the file.
     ncfile.close()

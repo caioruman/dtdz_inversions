@@ -189,7 +189,7 @@ def inversion_calculations(t2m, tt_925, tt_850, gz_925, gz_850):
     deltaT_850 = tt_850 - t2m
     dtdz_850 = deltaT_850/gz_850
 
-    len_time = float(deltaT.shape[0])
+    len_time = float(deltaT_925.shape[0])
 
     count_bool = np.greater(deltaT_925, 0)
     count = np.count_nonzero(count_bool.astype(np.int), axis=0)

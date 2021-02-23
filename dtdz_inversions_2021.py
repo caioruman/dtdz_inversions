@@ -16,6 +16,8 @@ from rpn import level_kinds
 from netCDF4 import Dataset
 import time
 
+from pathlib import Path
+
 '''
 Check the inversions in each output step.
 Calculate the dtdz and deltaT.
@@ -145,15 +147,21 @@ def main():
 
             #mean_deltaT, frequency, mean_deltaT_bottom, freq_bot, mean_deltaT_middle, freq_mid, mean_deltaT_top, freq_top, mean_deltaT_bottom_g, freq_bot_g, mean_deltaT_middle_g, freq_mid_g, mean_deltaT_top_g, freq_top_g, mean_diff, freq_diff  = inversion_calculations(tt[0,:,:,:], tt[3,:,:,:], tt[1,:,:,:], tt[2,:,:,:])
 
-            deltaT_925, dtdz_925, deltaT_850, dtdz_850 = inversion_calculations(tt_dm, tt[3,:,:,:], tt[5,:,:,:], gz[3,:,:,:], gz[5,:,:,:])
+            deltaT_925, dtdz_925, frequency_925, deltaT_850, dtdz_850, frequency_850 = inversion_calculations(tt_dm, tt[3,:,:,:], tt[5,:,:,:], gz[3,:,:,:], gz[5,:,:,:])
+            
+            len_time = float(deltaT_925.shape[0])
 
-            fname = "{2}/InversionV2/Inversion_925_1000_ERA_dtdz_{0}{1:02d}.nc".format(yy, mm, output_folder)
+            fname = "{2}/{0}/Inversion_{0}{1:02d}.nc".format(yy, mm, output_folder)
+            Path("{0}/{1}".format(output_folder, yy)).mkdir(parents=True, exist_ok=True)
+
             #vars=[("FREQ", frequency), ("DT", mean_deltaT), ("FQ_B", freq_bot), ("DT_B", mean_deltaT_bottom), ("FQ_M", freq_mid), ("DT_M", mean_deltaT_middle),
             #    ("FQ_T", freq_top), ("DT_T", mean_deltaT_top), ("FQ_BG", freq_bot_g), ("DT_BG", mean_deltaT_bottom_g), ("FQ_MG", freq_mid_g), ("DT_MG", mean_deltaT_middle_g),
             #    ("FQ_TG", freq_top_g), ("DT_TG", mean_deltaT_top_g), ("FQ_DIF", freq_diff), ("DT_DIF", mean_diff)]
     #        vars=[("FREQ", mean_fr), ("DT", mean_dt)]
-            save_netcdf(fname, vars, datefield, lats2d, lons2d)
-            
+            vars=[("FQ_925", frequency_925), ("DT_925", deltaT_925), ("DTDZ_925", Dtdz_925),
+                  ("FQ_850", frequency_850), ("DT_850", deltaT_850), ("DTDZ_850", Dtdz_850)]
+            save_netcdf(fname, vars, datefield, lats2d, lons2d, len_time)
+            sys.exit()
             r_dp.close()
             #r_pm.close()
             r_dm.close()
@@ -205,40 +213,17 @@ def inversion_calculations(t2m, tt_925, tt_850, gz_925, gz_850):
     aux = deltaT_925.copy()*np.nan
     count_bool = np.less_equal(deltaT_925, 0)
     np.copyto(deltaT_925, aux, where=count_bool)
-    print(deltaT_925.shape)
-    print(gz_925)
-    print(gz_850)
-    print(deltaT_925)
-    sys.exit()
-    #
+    np.copyto(dtdz_925, aux, where=count_bool)
 
-    #mean_deltaT = np.nanmean(deltaT, axis=0)
-
-    # applying the true/false field to the levels
-    np.copyto(delta_T_top, aux, where=count_bool)
-    np.copyto(delta_T_bottom, aux, where=count_bool)
-    np.copyto(delta_T_middle, aux, where=count_bool)
-
-#    count_nan = ~np.isnan(deltaT)
-#    count_diff_n = np.count_nonzero(count_nan.astype(np.int), axis=0)
+    count_bool = np.less_equal(deltaT_850, 0)
+    np.copyto(deltaT_850, aux, where=count_bool)
+    np.copyto(dtdz_850, aux, where=count_bool)
     
-#    print(count_diff)
-#    print(count)
-#    sys.exit()
-    freq_diff = count_diff/count
-    mean_diff = np.nanmean(diff, axis=0)
-
-    mean_dt_time = []
-    mean_fr_time = []
-
-    trange = np.arange(0,24,3)
-
 #    return mean_dt_time, mean_fr_time
-    return mean_deltaT, frequency, mean_deltaT_bottom, freq_bot, mean_deltaT_middle, freq_mid, mean_deltaT_top, freq_top, mean_deltaT_bottom_g, freq_bot_g, mean_deltaT_middle_g, freq_mid_g, mean_deltaT_top_g, freq_top_g, mean_diff, freq_diff
+    return deltaT_925, dtdz_925, frequency_925, deltaT_850, dtdz_850, frequency_850
 
 
-
-def save_netcdf(fname, vars, datefield, lat, lon):
+def save_netcdf(fname, vars, datefield, lat, lon, tempo):
 
     # model to get lat/lon
     #file = "/HOME/caioruman/Scripts/PBL/Inversion/ERA/netcdf/netcdf_model.nc"
@@ -255,8 +240,8 @@ def save_netcdf(fname, vars, datefield, lat, lon):
     nx = 172
     ny = 172
 #    tempo = 8
-    tempo = 1
-    data_tipo = "hours"
+    #tempo = 1
+    data_tipo = "3 hourly"
 
     # Precisa mudar para utilizar o caminho completo
     ncfile = Dataset('{0}'.format(fname), 'w')

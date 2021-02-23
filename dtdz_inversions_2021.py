@@ -298,7 +298,10 @@ def save_netcdf(fname, vars, datefield, lat, lon, tempo):
         var_nc.grid_desc = "rotated_pole"
         var_nc.cell_methods = "time: point"
         var_nc.missing_value = np.nan
-        var_nc[:,:,:] = var[1]
+        if (var[0] == "FQ_925" or var[0] == "FQ_850"):
+            var_nc[:,:] = var[1]
+        else:
+            var_nc[:,:,:] = var[1]
 
     # close the file.
     ncfile.close()

@@ -158,8 +158,8 @@ def main():
             #    ("FQ_T", freq_top), ("DT_T", mean_deltaT_top), ("FQ_BG", freq_bot_g), ("DT_BG", mean_deltaT_bottom_g), ("FQ_MG", freq_mid_g), ("DT_MG", mean_deltaT_middle_g),
             #    ("FQ_TG", freq_top_g), ("DT_TG", mean_deltaT_top_g), ("FQ_DIF", freq_diff), ("DT_DIF", mean_diff)]
     #        vars=[("FREQ", mean_fr), ("DT", mean_dt)]
-            vars=[("FQ_925", frequency_925), ("DT_925", deltaT_925), ("DTDZ_925", Dtdz_925),
-                  ("FQ_850", frequency_850), ("DT_850", deltaT_850), ("DTDZ_850", Dtdz_850)]
+            vars=[("FQ_925", frequency_925), ("DT_925", deltaT_925), ("DTDZ_925", dtdz_925),
+                  ("FQ_850", frequency_850), ("DT_850", deltaT_850), ("DTDZ_850", dtdz_850)]
             save_netcdf(fname, vars, datefield, lats2d, lons2d, len_time)
             sys.exit()
             r_dp.close()

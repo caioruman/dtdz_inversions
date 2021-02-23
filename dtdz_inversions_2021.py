@@ -103,6 +103,9 @@ def main():
             #print(var[dates_tt[0]].keys())
             level_tt = [*var[dates_tt[0]].keys()]
             
+            print(level_tt)
+            levels = [lev for lev in var.sorted_levels]
+
             var_3d = []
             for key in level_tt:
                 var_3d.append(np.asarray([var[d][key] for d in dates_tt]))
@@ -136,7 +139,7 @@ def main():
             ii = tt.shape[2]
             jj = tt.shape[3]
 
-            levels = [lev for lev in tt.sorted_levels]
+            
             print(levels)
             print(tt_dm.shape)
             print(tt.shape)

@@ -285,7 +285,7 @@ def save_netcdf(fname, vars, datefield, lat, lon, tempo):
     #Writing lat and lon
     lats_nc[:] = lat
     lons_nc[:] = lon
-    time[0] = datefield
+    time[0] = datefield.toordinal()
 
     # write data to variables along record (unlimited) dimension.
     # same data is written for each record.

@@ -151,12 +151,15 @@ def main():
             deltaT_925, dtdz_925, frequency_925, deltaT_850, dtdz_850, frequency_850 = inversion_calculations(tt_dm, tt[3,:,:,:], tt[5,:,:,:], gz[3,:,:,:], gz[5,:,:,:])
             
             len_time = float(deltaT_925.shape[0])
-            print(deltaT_925)
-            print(dtdz_925)
-            print(frequency_925)
+            #print(deltaT_925)
+            #print(dtdz_925)
+            #print(frequency_925)
 
             fname = "{2}/{0}/Inversion_{0}{1:02d}.nc".format(yy, mm, output_folder)
             Path("{0}/{1}".format(output_folder, yy)).mkdir(parents=True, exist_ok=True)
+
+            #save_pickle(yy, mm, output_folder, deltaT_925)
+            #pickle.dump(deltaT_925, open('{0}/{1}/inversion_deltaT925_{1}{2:02d}.p'.format(output_folder, yy, mm), "wb"))
 
             #vars=[("FREQ", frequency), ("DT", mean_deltaT), ("FQ_B", freq_bot), ("DT_B", mean_deltaT_bottom), ("FQ_M", freq_mid), ("DT_M", mean_deltaT_middle),
             #    ("FQ_T", freq_top), ("DT_T", mean_deltaT_top), ("FQ_BG", freq_bot_g), ("DT_BG", mean_deltaT_bottom_g), ("FQ_MG", freq_mid_g), ("DT_MG", mean_deltaT_middle_g),
@@ -164,7 +167,11 @@ def main():
     #        vars=[("FREQ", mean_fr), ("DT", mean_dt)]
             vars=[("FQ_925", frequency_925), ("DT_925", deltaT_925), ("DTDZ_925", dtdz_925),
                   ("FQ_850", frequency_850), ("DT_850", deltaT_850), ("DTDZ_850", dtdz_850)]
-            save_netcdf(fname, vars, datefield, lats2d, lons2d, len_time)
+
+            for var in vars:
+                pickle.dump(var[1], open('{0}/{1}/inversion_{3}_{1}{2:02d}.p'.format(output_folder, yy, mm, var[0]), "wb"))
+
+            #save_netcdf(fname, vars, datefield, lats2d, lons2d, len_time)
             sys.exit()
             r_dp.close()
             #r_pm.close()
@@ -181,6 +188,12 @@ def main():
 #Z_surface = np.squeeze(r_MF.variables['MF'][:])
 
 #r_MF.close()
+
+def save_pickle(yy, mm, output_folder, data):
+
+    pickle.dump(data, open('{0}/{1}/inversion_deltaT925_{1}{2:02d}.p'.format(output_folder, yy, mm), "wb"))
+
+    return None
 
 def replace_nan(data):
 

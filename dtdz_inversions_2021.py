@@ -105,7 +105,7 @@ def main():
             #print(var[dates_tt[0]].keys())
             level_tt = [*var[dates_tt[0]].keys()]
             
-            print(level_tt)
+            #print(level_tt)
             #levels = [lev for lev in var.sorted_levels]
 
             var_3d = []
@@ -150,6 +150,9 @@ def main():
             deltaT_925, dtdz_925, frequency_925, deltaT_850, dtdz_850, frequency_850 = inversion_calculations(tt_dm, tt[3,:,:,:], tt[5,:,:,:], gz[3,:,:,:], gz[5,:,:,:])
             
             len_time = float(deltaT_925.shape[0])
+            print(deltaT_925.shape)
+            print(dtdz_925.shape)
+            print(frequency_925.shape)
 
             fname = "{2}/{0}/Inversion_{0}{1:02d}.nc".format(yy, mm, output_folder)
             Path("{0}/{1}".format(output_folder, yy)).mkdir(parents=True, exist_ok=True)
@@ -279,7 +282,7 @@ def save_netcdf(fname, vars, datefield, lat, lon, tempo):
         var_nc.grid_desc = "rotated_pole"
         var_nc.cell_methods = "time: point"
         var_nc.missing_value = np.nan
-        var_nc[:,:,:] = var[1]
+        var_nc = var[1]
 
     # close the file.
     ncfile.close()

@@ -139,22 +139,13 @@ def main():
             ii = tt.shape[2]
             jj = tt.shape[3]
 
-            
-            #print(levels)
-            print(tt_dm.shape)
-            print(tt.shape)
-            sys.exit()
-
-            # Array containing the inversion base level
-
-
             #start_time = time.time()
 
             datefield = datetime(yy, mm, 1, 0, 0, 0)
 
             #mean_deltaT, frequency, mean_deltaT_bottom, freq_bot, mean_deltaT_middle, freq_mid, mean_deltaT_top, freq_top, mean_deltaT_bottom_g, freq_bot_g, mean_deltaT_middle_g, freq_mid_g, mean_deltaT_top_g, freq_top_g, mean_diff, freq_diff  = inversion_calculations(tt[0,:,:,:], tt[3,:,:,:], tt[1,:,:,:], tt[2,:,:,:])
 
-            deltaT_925, dtdz_925, deltaT_850, dtdz_850 = inversion_calculations(tt_dm, tt[3,:,:,:], tt[1,:,:,:], tt[2,:,:,:])
+            deltaT_925, dtdz_925, deltaT_850, dtdz_850 = inversion_calculations(tt_dm, tt[3,:,:,:], tt[5,:,:,:], gz[3,:,:,:], gz[5,:,:,:])
 
             fname = "{2}/InversionV2/Inversion_925_1000_ERA_dtdz_{0}{1:02d}.nc".format(yy, mm, output_folder)
             #vars=[("FREQ", frequency), ("DT", mean_deltaT), ("FQ_B", freq_bot), ("DT_B", mean_deltaT_bottom), ("FQ_M", freq_mid), ("DT_M", mean_deltaT_middle),
@@ -185,79 +176,48 @@ def replace_nan(data):
 
     return data
 
-def calc_dtdz(deltaT_lvl, deltaT, count, m_deltaT, count_bool, count_n):
-    # only using points were there are inversions
-    count_bool_inv = np.less_equal(deltaT, 0)   
-    aux = deltaT.copy()*np.nan
-    # masking points where there arent inversions
-    np.copyto(deltaT_lvl, aux, where=count_bool_inv)
-
-    count_bool_lvl_g = np.greater(deltaT_lvl, 0)
-    count_bool_lvl = np.less_equal(deltaT_lvl, 0)
-
-    count_l = np.count_nonzero(count_bool_lvl.astype(np.int), axis=0)
-    count_g = np.count_nonzero(count_bool_lvl_g.astype(np.int), axis=0)
-   
-    count_bool_dt = np.greater(m_deltaT, 0)
-    aux = m_deltaT.copy()*np.nan
-    count_l = count_l.astype(np.float64)
-    count_g = count_g.astype(np.float64)
-
-    np.copyto(count_l, aux, where=~count_bool_dt)
-    np.copyto(count_g, aux, where=~count_bool_dt)
-
-
-    # Frequency of each type
-    freq_l = (count - count_l)/count_n
-    freq_g = (count - count_g)/count_n
-
-    deltaT_lvl_l = deltaT_lvl.copy()
-    deltaT_lvl_g = deltaT_lvl.copy()
-
-    # Calculating the means
-    np.copyto(deltaT_lvl_l, aux, where=count_bool_lvl)
-    np.copyto(deltaT_lvl_g, aux, where=count_bool_lvl_g)
-
-    return freq_l, freq_g, np.nanmean(deltaT_lvl_l, axis=0), np.nanmean(deltaT_lvl_g, axis=0)
-
-def inversion_calculations(base_level_tt, top_level_tt, level975, level950):
+def inversion_calculations(t2m, tt_925, tt_850, gz_925, gz_850):
     """
         Calculate Inversion Strengh, Inversion Frequency
     """
 
-    # Inversion calculation, without other addons
-    deltaT = top_level_tt - base_level_tt
+    # Inversion calculation. 925
+    deltaT_925 = tt_925 - t2m
+    dtdz_925 = deltaT_925/gz_925
 
-    # 925 - 950
-    delta_T_top = top_level_tt - level950
-
-    # 975 - 1000
-    delta_T_bottom = level975 - base_level_tt
-
-    # 950 - 925
-    delta_T_middle = level950 - level975
+    # Inversion calculation. 850
+    deltaT_850 = tt_850 - t2m
+    dtdz_850 = deltaT_850/gz_850
 
     len_time = float(deltaT.shape[0])
 
-    count_bool = np.greater(deltaT, 0)
+    count_bool = np.greater(deltaT_925, 0)
     count = np.count_nonzero(count_bool.astype(np.int), axis=0)
 
-    frequency = count/len_time
+    frequency_925 = count/len_time
 
-    # mean of deltaT
-    aux = deltaT.copy()*np.nan
-    count_bool = np.less_equal(deltaT, 0)
-    np.copyto(deltaT, aux, where=count_bool)    
-    mean_deltaT = np.nanmean(deltaT, axis=0)
+    count_bool = np.greater(deltaT_850, 0)
+    count = np.count_nonzero(count_bool.astype(np.int), axis=0)
+
+    frequency_850 = count/len_time
+
+    # purging negative values
+    aux = deltaT_925.copy()*np.nan
+    count_bool = np.less_equal(deltaT_925, 0)
+    print(delta_925.shape)
+    deltaT_925 = deltaT_925[count_bool]
+    print(delta_925.shape)
+    print(gz_925)
+    print(delta_925)
+    sys.exit()
+    #np.copyto(deltaT_925, aux, where=count_bool)
+
+    #mean_deltaT = np.nanmean(deltaT, axis=0)
 
     # applying the true/false field to the levels
     np.copyto(delta_T_top, aux, where=count_bool)
     np.copyto(delta_T_bottom, aux, where=count_bool)
     np.copyto(delta_T_middle, aux, where=count_bool)
-
-    diff = delta_T_top - delta_T_bottom
-    count_diff_bool = np.greater(diff, 0)
-    count_diff = np.count_nonzero(count_diff_bool.astype(np.int), axis=0)
 
 #    count_nan = ~np.isnan(deltaT)
 #    count_diff_n = np.count_nonzero(count_nan.astype(np.int), axis=0)
@@ -268,38 +228,10 @@ def inversion_calculations(base_level_tt, top_level_tt, level975, level950):
     freq_diff = count_diff/count
     mean_diff = np.nanmean(diff, axis=0)
 
-
-    freq_bot, freq_bot_g, mean_deltaT_bottom, mean_deltaT_bottom_g = calc_dtdz(delta_T_bottom, deltaT, count, mean_deltaT, count_bool, len_time)
-    freq_mid, freq_mid_g, mean_deltaT_middle, mean_deltaT_middle_g = calc_dtdz(delta_T_middle, deltaT, count, mean_deltaT, count_bool, len_time)
-    freq_top, freq_top_g, mean_deltaT_top, mean_deltaT_top_g = calc_dtdz(delta_T_top, deltaT, count, mean_deltaT, count_bool, len_time)
-
-
     mean_dt_time = []
     mean_fr_time = []
 
     trange = np.arange(0,24,3)
-
-    #Calculate means for each timestep output
-#    for i in trange:
-#        #print(i/3)
-#        ii = int(i/3)        
-#
-#        aux = delta_T[ii::8,:,:]
-#
-#        aux_fr_count = np.less_equal(aux, 0)
-#        aux_fr = np.count_nonzero(aux_fr_count.astype(np.int), axis=0)
-#        aux_fr = aux_fr/float(aux.shape[0])
-#
-#        np.copyto(aux, aux.copy()*np.nan, where=aux_fr_count)
-#        aux = np.nanmean(aux, axis=0)
-#        mean_dt_time.append(aux)
-#
-#        count_bool_dt = np.greater_equal(aux, 0)
-#
-#        aux2 = count_bool_dt.copy()*np.nan
-#        np.copyto(aux_fr, aux2, where=~count_bool_dt)
-#        mean_fr_time.append(aux_fr)
-#
 
 #    return mean_dt_time, mean_fr_time
     return mean_deltaT, frequency, mean_deltaT_bottom, freq_bot, mean_deltaT_middle, freq_mid, mean_deltaT_top, freq_top, mean_deltaT_bottom_g, freq_bot_g, mean_deltaT_middle_g, freq_mid_g, mean_deltaT_top_g, freq_top_g, mean_diff, freq_diff

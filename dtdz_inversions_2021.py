@@ -80,7 +80,7 @@ def main():
             #else:
             k = 0
 
-            print("{0}/Samples/{1}_{2}{3:02d}/dp*".format(main_folder, exp, yy, mm))
+            #print("{0}/Samples/{1}_{2}{3:02d}/dp*".format(main_folder, exp, yy, mm))
     #        print k
             arq_dp = glob("{0}/Samples/{1}_{2}{3:02d}/dp*".format(main_folder, exp, yy, mm))[k]
             #print "{0}/Samples/{1}_{2}{3:02d}/dp*".format(main_folder, exp, yy, mm)
@@ -88,7 +88,7 @@ def main():
             #sys.exit()
 
             # Surface file
-            print("{0}/Samples/{1}_{2}{3:02d}/dm*".format(main_folder, exp, yy, mm))
+            #print("{0}/Samples/{1}_{2}{3:02d}/dm*".format(main_folder, exp, yy, mm))
             arq_dm = glob("{0}/Samples/{1}_{2}{3:02d}/dm*".format(main_folder, exp, yy, mm))[k]
 
             # Physics file
@@ -291,8 +291,8 @@ def save_netcdf(fname, vars, datefield, lat, lon, tempo):
     # write data to variables along record (unlimited) dimension.
     # same data is written for each record.
     for var in vars:
-        print(var[1].shape)
-        print(var[0])
+        #print(var[1].shape)
+        #print(var[0])
         var_nc = ncfile.createVariable(var[0], np.dtype('float32').char, ('time', 'y', 'x'))
         var_nc.units = "some unit"
         var_nc.coordinates = "lat lon"

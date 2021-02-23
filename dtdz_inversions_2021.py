@@ -204,11 +204,11 @@ def inversion_calculations(t2m, tt_925, tt_850, gz_925, gz_850):
     # purging negative values
     aux = deltaT_925.copy()*np.nan
     count_bool = np.less_equal(deltaT_925, 0)
-    print(delta_925.shape)
+    print(deltaT_925.shape)
     deltaT_925 = deltaT_925[count_bool]
-    print(delta_925.shape)
+    print(deltaT_925.shape)
     print(gz_925)
-    print(delta_925)
+    print(deltaT_925)
     sys.exit()
     #np.copyto(deltaT_925, aux, where=count_bool)
 

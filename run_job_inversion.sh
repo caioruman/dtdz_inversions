@@ -1,22 +1,27 @@
 #!/bin/bash
-#SBATCH --time=3:00:00
+#SBATCH --time=9:00:00
 #SBATCH --account=def-sushama
 #SBATCH --mem-per-cpu=4096M      # memory; default unit is megabytes
 #SBATCH --cpus-per-task=1
 
 # load base  python modules
-. /project/6001700/huziy/Software/software/2017/Core/miniconda3/4.3.27/bin/activate root
+#. /project/6001700/huziy/Software/software/2017/Core/miniconda3/4.3.27/bin/activate root
+. /home/cruman/projects/rrg-sushama-ab/cruman/miniconda/bin/activate py3.7
 sleep 30
 
 # add my dependencies
-export PYTHONPATH=/home/huziy/project/huziy/Python/Projects/RPN/src:${PYTHONPATH}
-sleep 30
+# Graham
+#export PYTHONPATH=/home/huziy/project/huziy/Python/Projects/RPN/src:${PYTHONPATH}
+# Cedar
+export PYTHONPATH=/home/huziy/rrg-sushama-ab/Python/Projects/RPN/src:${PYTHONPATH}
+#sleep 30
+export LD_LIBRARY_PATH=~huziy/lib:${LD_LIBRARY_PATH}
+#sleep 30
 
 
 # add pylibrmn dependencies
 . s.ssmuse.dot pylibrmn_deps
 # export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:~huziy/lib
-sleep 30
 
 
 # launch the script

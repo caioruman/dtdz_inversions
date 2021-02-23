@@ -38,18 +38,24 @@ Check:
 '''
 
 
-datai = 1986
-dataf = 2015
+datai = 1980
+dataf = 2005
 
 # simulation
 exp = "PanArctic_0.5d_ERAINT_NOCTEM_RUN"
-#exp = "PanArctic_0.5d_CanHisto_NOCTEM_RUN"
+exp = "PanArctic_0.5d_CanHisto_NOCTEM_RUN"
+exp = "PanArctic_0.5d_CanHisto_NOCTEM_R2"
 
 main_folder = "/home/cruman/scratch/glacier2/GEM/Output/{0}".format(exp)
 #main_folder = "/home/cruman/scratch/glacier/GEM/Output/{0}".format(exp)
+# On cedar
+main_folder = "/home/cruman/projects/rrg-sushama-ab/teufel/{0}".format(exp)
+output_folder = "/home/cruman/projects/rrg-sushama-ab/cruman/{0}".format(exp)
+output_folder = "/home/cruman/scratch/inversion/{0}".format(exp)
 
-eticket = "PAN_ERAI_DEF"
-#eticket = "PAN_CAN85_CT"
+#eticket = "PAN_ERAI_DEF"
+eticket = "PAN_CAN85_CT"
+eticket = "PAN_CAN85_R2"
 
 #exp = "PanArctic_0.5d_CanHisto_NOCTEM_RUN"
 #main_folder = "/glacier/caioruman/GEM/Output/{0}".format(exp)
@@ -192,9 +198,9 @@ def save_netcdf(fname, vars, datefield, lat, lon):
 
     # model to get lat/lon
     #file = "/HOME/caioruman/Scripts/PBL/Inversion/ERA/netcdf/netcdf_model.nc"
-    file = "/home/cruman/Documents/HomeUQAM/Scripts/PBL/Inversion/ERA/netcdf/netcdf_model.nc"
+#    file = "/home/cruman/Documents/HomeUQAM/Scripts/PBL/Inversion/ERA/netcdf/netcdf_model.nc"
     
-    data = Dataset(file)
+#    data = Dataset(file)
     # read lat,lon
     #lat = data.variables['lat'][:]
     #lon = data.variables['lon'][:]
@@ -248,7 +254,7 @@ def save_netcdf(fname, vars, datefield, lat, lon):
 
     # close the file.
     ncfile.close()
-    data.close()
+#    data.close()
 
 
 # Open the monthly files
@@ -327,15 +333,15 @@ for yy in range(datai, dataf+1):
 
  #       mean_dt, mean_fr = inversion_calculations(tt_dm, tt[3,:,:,:], tt[1,:,:,:], tt[2,:,:,:])
 
-        mean_deltaT, frequency, mean_deltaT_bottom, freq_bot, mean_deltaT_middle, freq_mid, mean_deltaT_top, freq_top, mean_deltaT_bottom_g, freq_bot_g, mean_deltaT_middle_g, freq_mid_g, mean_deltaT_top_g, freq_top_g, mean_diff, freq_diff = inversion_calculations(tt_dm, tt[3,:,:,:], tt[1,:,:,:], tt[2,:,:,:])
+#        mean_deltaT, frequency, mean_deltaT_bottom, freq_bot, mean_deltaT_middle, freq_mid, mean_deltaT_top, freq_top, mean_deltaT_bottom_g, freq_bot_g, mean_deltaT_middle_g, freq_mid_g, mean_deltaT_top_g, freq_top_g, mean_diff, freq_diff = inversion_calculations(tt_dm, tt[3,:,:,:], tt[1,:,:,:], tt[2,:,:,:])
         datefield = datetime(yy, mm, 1, 0, 0, 0)
 
         #outFILE = RPN("{2}/Inversion/Inversion_925_ERA_{0}{1:02d}v2.rpn".format(yy, mm, main_folder), mode="w")
-        fname = "{2}/InversionV2/Inversion_925_ERA_dtdz_{0}{1:02d}.nc".format(yy, mm, main_folder)
-        vars=[("FREQ", frequency), ("DT", mean_deltaT), ("FQ_B", freq_bot), ("DT_B", mean_deltaT_bottom), ("FQ_M", freq_mid), ("DT_M", mean_deltaT_middle),
-              ("FQ_T", freq_top), ("DT_T", mean_deltaT_top), ("FQ_BG", freq_bot_g), ("DT_BG", mean_deltaT_bottom_g), ("FQ_MG", freq_mid_g), ("DT_MG", mean_deltaT_middle_g),
-              ("FQ_TG", freq_top_g), ("DT_TG", mean_deltaT_top_g), ("FQ_DIF", freq_diff), ("DT_DIF", mean_diff)]
-        save_netcdf(fname, vars, datefield, lats2d, lons2d)
+#        fname = "{2}/InversionV2/Inversion_925_ERA_dtdz_{0}{1:02d}.nc".format(yy, mm, main_folder)
+#        vars=[("FREQ", frequency), ("DT", mean_deltaT), ("FQ_B", freq_bot), ("DT_B", mean_deltaT_bottom), ("FQ_M", freq_mid), ("DT_M", mean_deltaT_middle),
+ #             ("FQ_T", freq_top), ("DT_T", mean_deltaT_top), ("FQ_BG", freq_bot_g), ("DT_BG", mean_deltaT_bottom_g), ("FQ_MG", freq_mid_g), ("DT_MG", mean_deltaT_middle_g),
+ #             ("FQ_TG", freq_top_g), ("DT_TG", mean_deltaT_top_g), ("FQ_DIF", freq_diff), ("DT_DIF", mean_diff)]
+#        save_netcdf(fname, vars, datefield, lats2d, lons2d)
 
 #        mean_dz, mean_deltaT, frequency, mean_deltaT_rad, frequency_rad, mean_deltaT_cloud, frequency_cloud, lw_cl_net, lw_cl_toa, lw_cl_down = inversion_calculations(base_level, top_level, tt[0,:,:,:], tt[3,:,:,:], lw_net, lw_toa, lw_down, cloud_cover)
 #        mean_dz0, mean_deltaT0, frequency0, mean_deltaT_rad0, frequency_rad0, mean_deltaT_cloud0, frequency_cloud0, lw_cl_net0, lw_cl_toa0, lw_cl_down0 = inversion_calculations(base_level[0::8,:,:], top_level[0::8,:,:], tt[0,0::8,:,:], tt[3,0::8,:,:], lw_net[0::8,:,:], lw_toa[0::8,:,:], lw_down[0::8,:,:], cloud_cover[0::8,:,:])
@@ -345,7 +351,7 @@ for yy in range(datai, dataf+1):
 
         mean_deltaT, frequency, mean_deltaT_bottom, freq_bot, mean_deltaT_middle, freq_mid, mean_deltaT_top, freq_top, mean_deltaT_bottom_g, freq_bot_g, mean_deltaT_middle_g, freq_mid_g, mean_deltaT_top_g, freq_top_g, mean_diff, freq_diff  = inversion_calculations(tt[0,:,:,:], tt[3,:,:,:], tt[1,:,:,:], tt[2,:,:,:])
 
-        fname = "{2}/InversionV2/Inversion_925_1000_ERA_dtdz_{0}{1:02d}.nc".format(yy, mm, main_folder)
+        fname = "{2}/InversionV2/Inversion_925_1000_ERA_dtdz_{0}{1:02d}.nc".format(yy, mm, output_folder)
         vars=[("FREQ", frequency), ("DT", mean_deltaT), ("FQ_B", freq_bot), ("DT_B", mean_deltaT_bottom), ("FQ_M", freq_mid), ("DT_M", mean_deltaT_middle),
               ("FQ_T", freq_top), ("DT_T", mean_deltaT_top), ("FQ_BG", freq_bot_g), ("DT_BG", mean_deltaT_bottom_g), ("FQ_MG", freq_mid_g), ("DT_MG", mean_deltaT_middle_g),
               ("FQ_TG", freq_top_g), ("DT_TG", mean_deltaT_top_g), ("FQ_DIF", freq_diff), ("DT_DIF", mean_diff)]

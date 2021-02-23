@@ -273,7 +273,7 @@ def save_netcdf(fname, vars, datefield, lat, lon, tempo):
     # createVariable( NOMEVAR, TIPOVAR, DIMENSOES )
     lats_nc = ncfile.createVariable('lat', np.dtype("float32").char, ('y','x'))
     lons_nc = ncfile.createVariable('lon', np.dtype("float32").char, ('y','x'))
-    time = ncfile.createVariable('time', 'i4, ('time',))
+    time = ncfile.createVariable('time', 'i4', ('time',))
 
     # Unidades
     lats_nc.units = 'degrees_north'

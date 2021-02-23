@@ -168,11 +168,12 @@ def main():
             vars=[("FQ_925", frequency_925), ("DT_925", deltaT_925), ("DTDZ_925", dtdz_925),
                   ("FQ_850", frequency_850), ("DT_850", deltaT_850), ("DTDZ_850", dtdz_850)]
 
-            for var in vars:
-                pickle.dump(var[1], open('{0}/{1}/inversion_{3}_{1}{2:02d}.p'.format(output_folder, yy, mm, var[0]), "wb"))
+            #
+            #for var in vars:
+            #    pickle.dump(var[1], open('{0}/{1}/inversion_{3}_{1}{2:02d}.p'.format(output_folder, yy, mm, var[0]), "wb"))
 
             save_netcdf(fname, vars, datefield, lats2d, lons2d, len_time)
-            sys.exit()
+            #sys.exit()
             r_dp.close()
             #r_pm.close()
             r_dm.close()

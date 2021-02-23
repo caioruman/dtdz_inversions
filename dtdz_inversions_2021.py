@@ -171,7 +171,7 @@ def main():
             for var in vars:
                 pickle.dump(var[1], open('{0}/{1}/inversion_{3}_{1}{2:02d}.p'.format(output_folder, yy, mm, var[0]), "wb"))
 
-            #save_netcdf(fname, vars, datefield, lats2d, lons2d, len_time)
+            save_netcdf(fname, vars, datefield, lats2d, lons2d, len_time)
             sys.exit()
             r_dp.close()
             #r_pm.close()
@@ -267,13 +267,13 @@ def save_netcdf(fname, vars, datefield, lat, lon, tempo):
     # Crio as dimensoes latitude, longitude e tempo
     ncfile.createDimension('x', nx)
     ncfile.createDimension('y', ny)
-    ncfile.createDimension('time', tempo)
+    ncfile.createDimension('time', None)
 
     # Crio as variaveis latitude, longitude e tempo
     # createVariable( NOMEVAR, TIPOVAR, DIMENSOES )
     lats_nc = ncfile.createVariable('lat', np.dtype("float32").char, ('y','x'))
     lons_nc = ncfile.createVariable('lon', np.dtype("float32").char, ('y','x'))
-    time = ncfile.createVariable('time', np.dtype("float32").char, ('time',))
+    time = ncfile.createVariable('time', 'i4, ('time',))
 
     # Unidades
     lats_nc.units = 'degrees_north'
@@ -285,6 +285,7 @@ def save_netcdf(fname, vars, datefield, lat, lon, tempo):
     #Writing lat and lon
     lats_nc[:] = lat
     lons_nc[:] = lon
+    time[0] = datefield
 
     # write data to variables along record (unlimited) dimension.
     # same data is written for each record.
@@ -296,7 +297,7 @@ def save_netcdf(fname, vars, datefield, lat, lon, tempo):
         var_nc.grid_desc = "rotated_pole"
         var_nc.cell_methods = "time: point"
         var_nc.missing_value = np.nan
-        var_nc = var[1]
+        var_nc[:,:,:] = var[1]
 
     # close the file.
     ncfile.close()

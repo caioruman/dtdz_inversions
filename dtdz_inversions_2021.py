@@ -104,7 +104,7 @@ def main():
             level_tt = [*var[dates_tt[0]].keys()]
             
             print(level_tt)
-            levels = [lev for lev in var.sorted_levels]
+            #levels = [lev for lev in var.sorted_levels]
 
             var_3d = []
             for key in level_tt:
@@ -140,7 +140,7 @@ def main():
             jj = tt.shape[3]
 
             
-            print(levels)
+            #print(levels)
             print(tt_dm.shape)
             print(tt.shape)
             sys.exit()

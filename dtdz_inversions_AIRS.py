@@ -56,9 +56,10 @@ def main():
     #main_folder = "/home/cruman/scratch/glacier/GEM/Output/{0}".format(exp)
     # On cedar
     main_folder = "netcdf"
+    main_folder = "/pixel/project01/cruman/Data/AIRS/AIRS_daily"
     #output_folder = "/home/cruman/projects/rrg-sushama-ab/cruman/{0}".format(exp)
     #output_folder = "/home/cruman/scratch/inversion/{0}".format(exp)
-    output_folder = "netcdf"
+    output_folder = "/pixel/project01/cruman/Data/AIRS/AIRS_daily/Inversion"
 
     #AIRS.2008.01.01.L3.RetStd001.v7.0.3.0.G20189141133.hdf.nc4
 
@@ -75,7 +76,7 @@ def main():
 
             #print("{0}/Samples/{1}_{2}{3:02d}/dp*".format(main_folder, exp, yy, mm))
     #        print k
-            arq = glob("{0}/AIRS.{1}.{2:02d}.*.L3.RetStd001.v7.0.3.0.*.hdf.nc4".format(main_folder, yy, mm))
+            arq = sorted(glob("{0}/AIRS.{1}.{2:02d}.*.L3.RetStd001.v7.0.3.0.*.hdf.nc4".format(main_folder, yy, mm)))
             print(arq)
             #sys.exit()
             tt_aux = []
@@ -251,8 +252,8 @@ def inversion_calculations(t2m, tt_925, tt_850, gz_925, gz_850):
 
 def save_netcdf_1d(fname, vars, datefield, lat, lon, tempo, tt):
 
-    nx = len(lat)
-    ny = len(lon)
+    ny = len(lat)
+    nx = len(lon)
 #    tempo = 8
     #tempo = 1
     data_tipo = "hours"
@@ -270,12 +271,14 @@ def save_netcdf_1d(fname, vars, datefield, lat, lon, tempo, tt):
 
     # Crio as variaveis latitude, longitude e tempo
     # createVariable( NOMEVAR, TIPOVAR, DIMENSOES )
-    lats_nc = ncfile.createVariable('Latitude', 'f4', 'lat')
-    lons_nc = ncfile.createVariable('Longitude', 'f4', 'lon')
+    lats_nc = ncfile.createVariable('lat', 'f4', ('lat',))
+    lons_nc = ncfile.createVariable('lon', 'f4', ('lon',))
     time = ncfile.createVariable('time', 'i4', ('time',))
 
-    lats_nc = lat
-    lons_nc = lon
+    #print(lat)
+    #print(lats_nc)
+    lats_nc[:] = lat
+    lons_nc[:] = lon
     time[0] = datefield.toordinal()
 
     # Unidades
@@ -292,14 +295,15 @@ def save_netcdf_1d(fname, vars, datefield, lat, lon, tempo, tt):
     for var in vars:
         #print(var[1].shape)
         #print(var[0])
-        var_nc = ncfile.createVariable(var[0], np.dtype('float32').char, ('time', 'lon', 'lat'))
+        var_nc = ncfile.createVariable(var[0], np.dtype('float32').char, ('time', 'lat', 'lon'))
         var_nc.units = "some unit"
         var_nc.coordinates = "lat lon"
         #var_nc.grid_desc = "rotated_pole"
         var_nc.cell_methods = "time: point"
         var_nc.missing_value = np.nan
         if (var[0] == "FQ_925" or var[0] == "FQ_850"):
-            var_nc[0,:,:] = var[1]
+#            print(var[1])
+            var_nc[0,:,:] = var[1]           
         else:
             var_nc[:,:,:] = var[1]
 

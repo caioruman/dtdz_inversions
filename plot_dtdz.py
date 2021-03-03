@@ -16,9 +16,11 @@ from mpl_toolkits.basemap import Basemap
 from mpl_toolkits.basemap import maskoceans
 from netCDF4 import Dataset
 
-#from rpn.rpn import RPN
-#from rpn.domains.rotated_lat_lon import RotatedLatLon
+import pickle
 
+
+datai = 2003
+dataf = 2015
 
 def plotMaps_pcolormesh(data, figName, values, mapa, lons2d, lats2d, stations, var):
   '''
@@ -78,9 +80,20 @@ def calcStats(var1, var2):
   std1 = np.nanstd(var1, axis=0)
   std2 = np.nanstd(var2, axis=0)
 
-  t_test = stats.ttest_ind(var1, var2, axis=0, nan_policy='omit')
+  t_test, p = stats.ttest_ind(var1, var2, axis=0, nan_policy='omit')
 
-  return t_test, mean1, mean2, std1, std2
+  return t_test, p, mean1, mean2, std1, std2
+
+def save_pickle(pickle_folder, per, var, t_test, p, mean1, std1, mean2, std2):
+
+  pickle.dump(t_test, open('{0}/{4}_t_test_GEM-ERA_minus_AIRS_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per, var), "wb"))
+  pickle.dump(p, open('{0}/{4}_p_GEM-ERA_minus_AIRS_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per, var), "wb"))
+  pickle.dump(mean1, open('{0}/{4}_mean_GEM-ERA_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per, var), "wb"))
+  pickle.dump(std1, open('{0}/{4}_std_GEM-ERA_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per, var), "wb"))
+  pickle.dump(mean2, open('{0}/{4}_mean_AIRS_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per, var), "wb"))
+  pickle.dump(std2, open('{0}/{4}_std_AIRS_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per, var), "wb"))
+
+
 """
  -- Calculate the mean and coefficient of variance / std 
     for the AIRS data and the GEM-ERA simulation
@@ -96,6 +109,7 @@ exp = ["PanArctic_0.5d_ERAINT_NOCTEM_RUN"]
 main_folder = "/pixel/project01/cruman/ModelData/GEM_SIMS"
 #main_folder = "/home/caioruman/Documents/McGill/NC/dtdz/"
 val_folder = "/pixel/project01/cruman/Data/AIRS/AIRS_daily/Inversion"
+pickle_folder = "/pixel/project01/cruman/Data/Pickle"
 
 # Sounding Data
 #sounding_file = "/home/cruman/project/cruman/Scripts/soundings/inv_list_DJF.dat"
@@ -106,9 +120,6 @@ val_folder = "/pixel/project01/cruman/Data/AIRS/AIRS_daily/Inversion"
 
 period = ["DJF", "JJA"]#, 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Nov', 'Dec']
 period = [(12, 1, 2), (6, 7, 8)]
-
-datai = 2003
-dataf = 2015
 
 from matplotlib.colors import  ListedColormap
 # Open the monthly files
@@ -125,7 +136,7 @@ for per in period:
       # Opening the model file
       for ee in exp:
         ff = "{0}/{3}/{1}/Inversion_{1}{2:02d}.nc".format(main_folder, year, month, ee)
-        print(ff)
+        #print(ff)
         arq = Dataset(ff, 'r')
         
         if init:
@@ -155,7 +166,7 @@ for per in period:
 
       # Opening the AIRS files
       ff = "{0}/{1}/Inversion_{1}{2:02d}.crcm5grid.nc".format(val_folder, year, month)
-      print(ff)
+      #print(ff)
       arq = Dataset(ff, 'r')
 
       if initV:
@@ -178,16 +189,39 @@ for per in period:
         dtdz_925v = np.vstack((arq.variables['DTDZ_925'][:], dtdz_925v))
         dtdz_850v = np.vstack((arq.variables['DTDZ_850'][:], dtdz_850v))
 
-      print(arq.variables['DT_925'][:].shape)
       arq.close()
+
+  t_test, p, mean1, mean2, std1, std2 = calcStats(dt_925, dt_925v)
   
-  print(dt_925)
+  # Saving things to pickle to save processing time.
+  save_pickle(pickle_folder, per, 'dt_925', t_test, p, mean1, std1, mean2, std2)
 
-  print(dt_925.shape, dt_925v.shape)
-  t_test, mean1, mean2, std1, std2 = calcStats(dt_925, dt_925v)
+  t_test, p, mean1, mean2, std1, std2 = calcStats(dt_850, dt_850v)
+  
+  # Saving things to pickle to save processing time.
+  save_pickle(pickle_folder, per, 'dt_850', t_test, p, mean1, std1, mean2, std2)
 
-  print(t_test)
-  sys.exit()
+  t_test, p, mean1, mean2, std1, std2 = calcStats(fq_925, fq_925v)
+  
+  # Saving things to pickle to save processing time.
+  save_pickle(pickle_folder, per, 'fq_925', t_test, p, mean1, std1, mean2, std2)
+
+  t_test, p, mean1, mean2, std1, std2 = calcStats(fq_850, fq_850v)
+  
+  # Saving things to pickle to save processing time.
+  save_pickle(pickle_folder, per, 'fq_850', t_test, p, mean1, std1, mean2, std2)
+
+  t_test, p, mean1, mean2, std1, std2 = calcStats(dtdz_925, dtdz_925v)
+  
+  # Saving things to pickle to save processing time.
+  save_pickle(pickle_folder, per, 'dtdz_925', t_test, p, mean1, std1, mean2, std2)
+
+  t_test, p, mean1, mean2, std1, std2 = calcStats(dtdz_850, dtdz_850v)
+  
+  # Saving things to pickle to save processing time.
+  save_pickle(pickle_folder, per, 'dtdz_850', t_test, p, mean1, std1, mean2, std2)
+  
+  #sig = p[p < 0.05]
 
   # Figures for the mean and std of each variable, 
 

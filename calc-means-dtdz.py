@@ -196,29 +196,29 @@ for per in period:
   t_test, p, mean1, mean2, std1, std2 = calcStats(dt_925, dt_925v)
 
   # Saving things to pickle to save processing time.
-  save_pickle(pickle_folder, per, 'dt_925', t_test, p, mean1, std1, mean2, std2, name, datai, dataif)
+  save_pickle(pickle_folder, per, 'dt_925', t_test, p, mean1, std1, mean2, std2, name)
 
   t_test, p, mean1, mean2, std1, std2 = calcStats(dt_850, dt_850v)
   
   # Saving things to pickle to save processing time.
-  save_pickle(pickle_folder, per, 'dt_850', t_test, p, mean1, std1, mean2, std2, name, datai, dataif)
+  save_pickle(pickle_folder, per, 'dt_850', t_test, p, mean1, std1, mean2, std2, name)
 
   t_test, p, mean1, mean2, std1, std2 = calcStats(fq_925, fq_925v)
   
   # Saving things to pickle to save processing time.
-  save_pickle(pickle_folder, per, 'fq_925', t_test, p, mean1, std1, mean2, std2, name, datai, dataif)
+  save_pickle(pickle_folder, per, 'fq_925', t_test, p, mean1, std1, mean2, std2, name)
 
   t_test, p, mean1, mean2, std1, std2 = calcStats(fq_850, fq_850v)
   
   # Saving things to pickle to save processing time.
-  save_pickle(pickle_folder, per, 'fq_850', t_test, p, mean1, std1, mean2, std2, name, datai, dataif)
+  save_pickle(pickle_folder, per, 'fq_850', t_test, p, mean1, std1, mean2, std2, name)
 
   t_test, p, mean1, mean2, std1, std2 = calcStats(dtdz_925, dtdz_925v)
   
   # Saving things to pickle to save processing time.
-  save_pickle(pickle_folder, per, 'dtdz_925', t_test, p, mean1, std1, mean2, std2, name, datai, dataif)
+  save_pickle(pickle_folder, per, 'dtdz_925', t_test, p, mean1, std1, mean2, std2, name)
 
   t_test, p, mean1, mean2, std1, std2 = calcStats(dtdz_850, dtdz_850v)
   
   # Saving things to pickle to save processing time.
-  save_pickle(pickle_folder, per, 'dtdz_850', t_test, p, mean1, std1, mean2, std2, name, datai, dataif)
+  save_pickle(pickle_folder, per, 'dtdz_850', t_test, p, mean1, std1, mean2, std2, name)

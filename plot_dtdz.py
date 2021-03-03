@@ -126,7 +126,7 @@ for per in period:
 
   # Figures for the mean and std of each variable, 
 
-    figName = "fig_{0}_{1}_{2}".format(datai, per[1])
+    figName = "fig_{0}_{1}_{2}".format(datai, var, per[1])
 
     data = mean_gem - mean_airs
 

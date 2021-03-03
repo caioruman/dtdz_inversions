@@ -19,7 +19,7 @@ from netCDF4 import Dataset
 import pickle
 
 
-datai = 2002
+datai = 2003
 dataf = 2015
 
 def plotMaps_pcolormesh(data, figName, values, mapa, lons2d, lats2d):

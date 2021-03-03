@@ -108,28 +108,15 @@ period = ["DJF", "JJA"]#, 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'
 period = [(12, 1, 2), (6, 7, 8)]
 
 datai = 2003
-dataf = 2005
-
-lats2d = None
+dataf = 2015
 
 from matplotlib.colors import  ListedColormap
 # Open the monthly files
 
 for per in period:
 
-  fq_925 = []
-  dt_925 = []
-  dtdz_925 = []
-  fq_850 = []
-  dt_850 = []
-  dtdz_850 = []
-
-  fq_925v = []
-  dt_925v = []
-  dtdz_925v = []
-  fq_850v = []
-  dt_850v = []
-  dtdz_850v = []
+  initV = True
+  init = True
 
   for year in range(datai, dataf+1):
     for month in per:
@@ -141,17 +128,27 @@ for per in period:
         print(ff)
         arq = Dataset(ff, 'r')
         
-        fq_925.append(arq.variables['FQ_925'][:])
-        fq_850.append(arq.variables['FQ_850'][:])
-        dt_925.append(arq.variables['DT_925'][:])
-        dt_850.append(arq.variables['DT_850'][:])
-        dtdz_925.append(arq.variables['DTDZ_925'][:])
-        dtdz_850.append(arq.variables['DTDZ_850'][:])
-        print(arq.variables['DT_925'][:].shape)
+        if init:
 
-        if lats2d is None:
+          fq_925 = arq.variables['FQ_925'][:]
+          fq_850 = arq.variables['FQ_850'][:]
+          dt_925 = arq.variables['DT_925'][:]
+          dt_850 = arq.variables['DT_850'][:]
+          dtdz_925 = arq.variables['DTDZ_925'][:]
+          dtdz_850 = arq.variables['DTDZ_850'][:]
+
           lats2d = arq.variables['lat']
           lons2d = arq.variables['lon']
+          init = False
+
+        else:
+
+          fq_925 = np.vstack((arq.variables['FQ_925'][:], fq_925))
+          fq_850 = np.vstack((arq.variables['FQ_850'][:], fq_850))
+          dt_925 = np.vstack((arq.variables['DT_925'][:], dt_925 ))
+          dt_850 = np.vstack((arq.variables['DT_850'][:], dt_850))
+          dtdz_925 = np.vstack((arq.variables['DTDZ_925'][:], dtdz_925))
+          dtdz_850 = np.vstack((arq.variables['DTDZ_850'][:], dtdz_850))
 
         arq.close()
       # adding the variables to the array/list
@@ -160,35 +157,37 @@ for per in period:
       ff = "{0}/{1}/Inversion_{1}{2:02d}.crcm5grid.nc".format(val_folder, year, month)
       print(ff)
       arq = Dataset(ff, 'r')
-      fq_925v.append(arq.variables['FQ_925'][:])
-      fq_850v.append(arq.variables['FQ_850'][:])
-      dt_925v.append(arq.variables['DT_925'][:])
-      dt_850v.append(arq.variables['DT_850'][:])
-      dtdz_925v.append(arq.variables['DTDZ_925'][:])
-      dtdz_850v.append(arq.variables['DTDZ_850'][:])
+
+      if initV:
+
+        fq_925v = arq.variables['FQ_925'][:]
+        fq_850v = arq.variables['FQ_850'][:]
+        dt_925v = arq.variables['DT_925'][:]
+        dt_850v = arq.variables['DT_850'][:]
+        dtdz_925v = arq.variables['DTDZ_925'][:]
+        dtdz_850v = arq.variables['DTDZ_850'][:]
+
+        initV = False
+
+      else:
+
+        fq_925v = np.vstack((arq.variables['FQ_925'][:], fq_925v))
+        fq_850v = np.vstack((arq.variables['FQ_850'][:], fq_850v))
+        dt_925v = np.vstack((arq.variables['DT_925'][:], dt_925v ))
+        dt_850v = np.vstack((arq.variables['DT_850'][:], dt_850v))
+        dtdz_925v = np.vstack((arq.variables['DTDZ_925'][:], dtdz_925v))
+        dtdz_850v = np.vstack((arq.variables['DTDZ_850'][:], dtdz_850v))
 
       print(arq.variables['DT_925'][:].shape)
       arq.close()
   
   print(dt_925)
-  fq_925 = np.array(fq_925)
-  dt_925 = np.array(dt_925)
-  dtdz_925 = np.array(dtdz_925)
-  fq_850 = np.array(fq_850)
-  dt_850 = np.array(dt_850)
-  dtdz_850 = np.array(dtdz_850)
-
-  fq_925v = np.array(fq_925v)
-  dt_925v = np.array(dt_925v)
-  dtdz_925v = np.array(dtdz_925v)
-  fq_850v = np.array(fq_850v)
-  dt_850v = np.array(dt_850v)
-  dtdz_850v = np.array(dtdz_850v)
 
   print(dt_925.shape, dt_925v.shape)
   t_test, mean1, mean2, std1, std2 = calcStats(dt_925, dt_925v)
 
   print(t_test)
+  sys.exit()
 
   # Figures for the mean and std of each variable, 
 

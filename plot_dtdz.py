@@ -108,7 +108,7 @@ period = ["DJF", "JJA"]#, 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'
 period = [(12, 1, 2), (6, 7, 8)]
 
 datai = 2003
-dataf = 2015
+dataf = 2005
 
 lats2d = None
 
@@ -167,6 +167,7 @@ for per in period:
       dtdz_850v.append(arq.variables['DTDZ_850'][:])
       arq.close()
   
+  print(dt_925)
   fq_925 = np.array(fq_925)
   dt_925 = np.array(dt_925)
   dtdz_925 = np.array(dtdz_925)

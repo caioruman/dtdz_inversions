@@ -93,9 +93,9 @@ def calcStats(var1, var2):
 exp = ["PanArctic_0.5d_ERAINT_NOCTEM_RUN"]
 #exp = "PanArctic_0.5d_CanHisto_NOCTEM_RUN"
 
-main_folder = "/pixel/project01/cruman/ModelData/GEM_SIMS/"
+main_folder = "/pixel/project01/cruman/ModelData/GEM_SIMS"
 #main_folder = "/home/caioruman/Documents/McGill/NC/dtdz/"
-val_folder = "/pixel/project01/cruman/Data/AIRS/AIRS_daily/Inversion/"
+val_folder = "/pixel/project01/cruman/Data/AIRS/AIRS_daily/Inversion"
 
 # Sounding Data
 #sounding_file = "/home/cruman/project/cruman/Scripts/soundings/inv_list_DJF.dat"
@@ -157,7 +157,7 @@ for per in period:
 
       # Opening the AIRS files
       ff = "{0}/{1}/Inversion_{1}{2:02d}.crcm5grid.nc".format(val_folder, year, month)
-
+      print(ff)
       arq = Dataset(ff, 'r')
       fq_925v.append(arq.variables['FQ_925'][:])
       fq_850v.append(arq.variables['FQ_850'][:])
@@ -181,6 +181,7 @@ for per in period:
   dt_850v = np.array(dt_850v)
   dtdz_850v = np.array(dtdz_850v)
 
+  print(dt_925.shape, dt_925v.shape)
   t_test, mean1, mean2, std1, std2 = calcStats(dt_925, dt_925v)
 
   print(t_test)

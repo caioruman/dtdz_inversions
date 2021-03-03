@@ -124,7 +124,7 @@ pickle_folder = "/pixel/project01/cruman/Data/Pickle"
 # FQ_850, DT_850, DTDZ_850
 
 period = ["DJF", "JJA"]#, 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Nov', 'Dec']
-period = [(12, 1, 2), (6, 7, 8)]
+period = [[(12, 1, 2), "DJF"], [(6, 7, 8), "JJA"]]
 
 name = "GEMCAM_RCP85"
 
@@ -136,11 +136,11 @@ for per in period:
   init = True
 
   #for year in range(datai, dataf+1):
-  for i in range(0, 30):
+  for i in range(0, 1):
     year = datai + i
     yearf = dataif + i
     
-    for month in per:
+    for month in per[0]:
       print(year, month)
       
       # Opening the model file
@@ -196,29 +196,29 @@ for per in period:
   t_test, p, mean1, mean2, std1, std2 = calcStats(dt_925, dt_925v)
 
   # Saving things to pickle to save processing time.
-  save_pickle(pickle_folder, per, 'dt_925', t_test, p, mean1, std1, mean2, std2, name)
+  save_pickle(pickle_folder, per[1], 'dt_925', t_test, p, mean1, std1, mean2, std2, name)
 
   t_test, p, mean1, mean2, std1, std2 = calcStats(dt_850, dt_850v)
   
   # Saving things to pickle to save processing time.
-  save_pickle(pickle_folder, per, 'dt_850', t_test, p, mean1, std1, mean2, std2, name)
+  save_pickle(pickle_folder, per[1], 'dt_850', t_test, p, mean1, std1, mean2, std2, name)
 
   t_test, p, mean1, mean2, std1, std2 = calcStats(fq_925, fq_925v)
   
   # Saving things to pickle to save processing time.
-  save_pickle(pickle_folder, per, 'fq_925', t_test, p, mean1, std1, mean2, std2, name)
+  save_pickle(pickle_folder, per[1], 'fq_925', t_test, p, mean1, std1, mean2, std2, name)
 
   t_test, p, mean1, mean2, std1, std2 = calcStats(fq_850, fq_850v)
   
   # Saving things to pickle to save processing time.
-  save_pickle(pickle_folder, per, 'fq_850', t_test, p, mean1, std1, mean2, std2, name)
+  save_pickle(pickle_folder, per[1], 'fq_850', t_test, p, mean1, std1, mean2, std2, name)
 
   t_test, p, mean1, mean2, std1, std2 = calcStats(dtdz_925, dtdz_925v)
   
   # Saving things to pickle to save processing time.
-  save_pickle(pickle_folder, per, 'dtdz_925', t_test, p, mean1, std1, mean2, std2, name)
+  save_pickle(pickle_folder, per[1], 'dtdz_925', t_test, p, mean1, std1, mean2, std2, name)
 
   t_test, p, mean1, mean2, std1, std2 = calcStats(dtdz_850, dtdz_850v)
   
   # Saving things to pickle to save processing time.
-  save_pickle(pickle_folder, per, 'dtdz_850', t_test, p, mean1, std1, mean2, std2, name)
+  save_pickle(pickle_folder, per[1], 'dtdz_850', t_test, p, mean1, std1, mean2, std2, name)

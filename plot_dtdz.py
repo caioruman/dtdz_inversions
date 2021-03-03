@@ -122,7 +122,8 @@ for per in period:
     mean_airs = pickle.load( open('{0}/{4}_mean_AIRS_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var), "rb"))
     std_airs = pickle.load( open('{0}/{4}_std_AIRS_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var), "rb"))
   
-    sig = p[p < 0.05]
+    sig = p.copy()
+    sig[p > 0.05] = np.nan
 
   # Figures for the mean and std of each variable, 
 

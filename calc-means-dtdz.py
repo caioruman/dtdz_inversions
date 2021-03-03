@@ -89,12 +89,12 @@ def calcStats(var1, var2):
 
 def save_pickle(pickle_folder, per, var, t_test, p, mean1, std1, mean2, std2, name):
 
-  pickle.dump(t_test, open('{0}/{4}_t_test_{5}_{1}{2}_{3}.p'.format(pickle_folder, datai, dataif, per, var), "wb"))
-  pickle.dump(p, open('{0}/{4}_p_{5}_{1}{2}_{3}.p'.format(pickle_folder, datai, dataif, per, var), "wb"))
-  pickle.dump(mean1, open('{0}/{3}_mean_{4}_{1}_{2}.p'.format(pickle_folder, datai, per, var), "wb"))
-  pickle.dump(std1, open('{0}/{3}_std_{4}_{1}_{2}.p'.format(pickle_folder, datai, per, var), "wb"))
-  pickle.dump(mean2, open('{0}/{3}_mean_{4}_{1}_{2}.p'.format(pickle_folder, dataif, per, var), "wb"))
-  pickle.dump(std2, open('{0}/{3}_std_{4}_{1}_{2}.p'.format(pickle_folder, dataif, per, var), "wb"))
+  pickle.dump(t_test, open('{0}/{4}_t_test_{5}_{1}{2}_{3}.p'.format(pickle_folder, datai, dataif, per, var, name), "wb"))
+  pickle.dump(p, open('{0}/{4}_p_{5}_{1}{2}_{3}.p'.format(pickle_folder, datai, dataif, per, var, name), "wb"))
+  pickle.dump(mean1, open('{0}/{3}_mean_{4}_{1}_{2}.p'.format(pickle_folder, datai, per, var, name), "wb"))
+  pickle.dump(std1, open('{0}/{3}_std_{4}_{1}_{2}.p'.format(pickle_folder, datai, per, var, name), "wb"))
+  pickle.dump(mean2, open('{0}/{3}_mean_{4}_{1}_{2}.p'.format(pickle_folder, dataif, per, var, name), "wb"))
+  pickle.dump(std2, open('{0}/{3}_std_{4}_{1}_{2}.p'.format(pickle_folder, dataif, per, var, name), "wb"))
 
 
 """
@@ -136,7 +136,7 @@ for per in period:
   init = True
 
   #for year in range(datai, dataf+1):
-  for i in range(0, 1):
+  for i in range(0, 30):
     year = datai + i
     yearf = dataif + i
     

@@ -147,6 +147,7 @@ for per in period:
         dt_850.append(arq.variables['DT_850'][:])
         dtdz_925.append(arq.variables['DTDZ_925'][:])
         dtdz_850.append(arq.variables['DTDZ_850'][:])
+        print(arq.variables['DT_925'][:].shape)
 
         if lats2d is None:
           lats2d = arq.variables['lat']
@@ -165,6 +166,8 @@ for per in period:
       dt_850v.append(arq.variables['DT_850'][:])
       dtdz_925v.append(arq.variables['DTDZ_925'][:])
       dtdz_850v.append(arq.variables['DTDZ_850'][:])
+
+      print(arq.variables['DT_925'][:].shape)
       arq.close()
   
   print(dt_925)

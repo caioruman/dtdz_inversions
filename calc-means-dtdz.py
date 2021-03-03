@@ -136,7 +136,7 @@ for per in period:
   init = True
 
   #for year in range(datai, dataf+1):
-  for i in range(0, 1):
+  for i in range(0, 30):
     year = datai + i
     yearf = dataif + i
     

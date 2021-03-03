@@ -113,7 +113,7 @@ for per in period:
   for var in vars:
   
   # Opening the files
-    per2 = str(per[0]).replace('(', '_').replace(')', '_').replace(',', '_')
+    per2 = str(per[0]).replace('(', '_').replace(')', '_').replace(',', '_').replace(' ', '_')
     print('{0}/{4}_t_test_GEM-ERA_minus_AIRS_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var))
     t_test = pickle.load( open('{0}/{4}_t_test_GEM-ERA_minus_AIRS_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var), "rb"))
     p = pickle.load( open('{0}/{4}_p_GEM-ERA_minus_AIRS_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var), "rb"))

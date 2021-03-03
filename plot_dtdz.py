@@ -149,8 +149,8 @@ for per in period:
         dtdz_850.append(arq.variables['DTDZ_850'][:])
 
         if lats2d is None:
-          lats2d = arq.variables['']
-          lons2d = arq.variables['']
+          lats2d = arq.variables['lat']
+          lons2d = arq.variables['lon']
 
         arq.close()
       # adding the variables to the array/list

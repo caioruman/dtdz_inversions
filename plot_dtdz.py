@@ -133,10 +133,12 @@ for per in period:
 
   for year in range(datai, dataf+1):
     for month in per:
-    
+      print(year, month)
+      
       # Opening the model file
       for ee in exp:
         ff = "{0}/{3}/{1}/Inversion_{1}{2:02d}.nc".format(main_folder, year, month, ee)
+        print(ff)
         arq = Dataset(ff, 'r')
         
         fq_925.append(arq.variables['FQ_925'][:])

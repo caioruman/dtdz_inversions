@@ -22,7 +22,7 @@ import pickle
 datai = 2002
 dataf = 2015
 
-def plotMaps_pcolormesh(data, figName, values, mapa, lons2d, lats2d, stations, var):
+def plotMaps_pcolormesh(data, figName, values, mapa, lons2d, lats2d):
   '''
   fnames: List of filenames. Usually 2 (clim mean and future projection)
   varnames: list of variables to plot
@@ -54,17 +54,17 @@ def plotMaps_pcolormesh(data, figName, values, mapa, lons2d, lats2d, stations, v
   #b.drawparallels(parallels,labels=[True,True,True,True], fontsize=16)
   meridians = np.arange(0.,351.,45.)
   b.drawmeridians(meridians,labels=[True,True,True,True], fontsize=16)
-  for item in stations:
-#        print(item)
-#        print(stations)
-#        print
-    x, y = b(item[1], item[0])
-    if var == "DT" or var == "DT0" or var == "DT12":
-      vv = item[2]
-    else:
-      vv = item[3]
+#   for item in stations:
+# #        print(item)
+# #        print(stations)
+# #        print
+#     x, y = b(item[1], item[0])
+#     if var == "DT" or var == "DT0" or var == "DT12":
+#       vv = item[2]
+#     else:
+#       vv = item[3]
 
-    img = b.scatter(x, y, c=vv, s=80, cmap=mapa, norm=bn, edgecolors='black')
+#     img = b.scatter(x, y, c=vv, s=80, cmap=mapa, norm=bn, edgecolors='black')
 
   plt.subplots_adjust(top=0.75, bottom=0.25)
 
@@ -123,9 +123,22 @@ for per in period:
 
   # Figures for the mean and std of each variable, 
 
-    figName = "fig_{0}_{1}_{2}".format(datai, per, var)
+    figName = "fig_{0}_{1}_{2}".format(datai, per)
 
-    val = mean_gem - mean_airs
+    data = mean_gem - mean_airs
+
+    values = np.arange(-12,13,2)
+    
+    colors = ['#a50026', '#d73027', '#f46d43', '#fdae61', '#fee090', "#ffffff", "#ffffff", '#e0f3f8', '#abd9e9', '#74add1', '#4575b4', '#313695']
+    #colors = [(255,255,255),(255,249,190),(255,223,34),(248,159,28),(243,111,33),(239,66,36),(238,40,35),(208,40,35),(189,36,41),(241,105,160)]
+    #colors = np.array(colors)/255.
+    v = abs(max(data, key=abs))
+    values = np.linspace(-v, v, len(colors))
+
+    cmap = mpl.colors.ListedColormap(colors)
+
+    plotMaps_pcolormesh(data, figName, values, cmap, lons2d, lats2d, var)
+    sys.exit()
   
         #
     if var == "DZ" or var == "ZBAS":
@@ -141,7 +154,7 @@ for per in period:
       #values = np.array([0, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1])*100
     elif var == "deltaT":
       
-      data = data - data2
+      
       values = np.arange(-6,7,1)
       colors = ['#a50026', '#d73027', '#f46d43', '#fdae61', '#fee090', "#ffffff", "#ffffff", '#e0f3f8', '#abd9e9', '#74add1', '#4575b4', '#313695']
 

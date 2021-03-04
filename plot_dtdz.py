@@ -133,16 +133,16 @@ for per in period:
     
     colors = ['#a50026', '#d73027', '#f46d43', '#fdae61', '#fee090', "#ffffff", "#ffffff", '#e0f3f8', '#abd9e9', '#74add1', '#4575b4', '#313695']
   
-    v = abs(max(np.nanmax(data), np.nanmin(data), key=abs))
+    #v = abs(max(np.nanmax(data), np.nanmin(data), key=abs))
 
     if (var == "dt_925" or var == "dt_850"):
       values = np.linspace(-9, 9, len(colors)+1)
     elif (var == "dtdz_925" or var == "dtdz_850"):
-      values = np.linspace(-v, v, len(colors)+1)
+      values = np.linspace(-9, 9, len(colors)+1)
       mean_gem = mean_gem*100   # original units: K/dm
       mean_airs = mean_airs*1000 # original units: K/m
     else:
-      values = np.linspace(-v, v, len(colors)+1)
+      values = np.linspace(-100, 100, len(colors)+1)
 
     data = mean_gem - mean_airs
 
@@ -173,7 +173,7 @@ for per in period:
     plotMaps_pcolormesh(mean_airs, figName, values, cmap, lons2d, lats2d)
 
     # plotting std / covariance
-    
+
     #sys.exit()
   
         #

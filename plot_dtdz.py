@@ -174,7 +174,7 @@ for per in period:
 
     # plotting std / covariance
 
-    #sys.exit()
+    sys.exit()
   
         #
     if var == "DZ" or var == "ZBAS":
@@ -206,4 +206,4 @@ for per in period:
 
     cmap = mpl.colors.ListedColormap(colors)
 
-    plotMaps_pcolormesh(data, figName, values, cmap, lons2d, lats2d, stations, var)
+    #plotMaps_pcolormesh(data, figName, values, cmap, lons2d, lats2d, stations, var)

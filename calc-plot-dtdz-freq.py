@@ -32,7 +32,8 @@ def plotMaps_pcolormesh(data, figName, values, mapa, lons2d, lats2d):
   # GPCP
   fig = plt.figure(1, figsize=(14, 22), frameon=False, dpi=150)
   bn = BoundaryNorm(values, ncolors=len(values) - 1)
-
+  #print(lons2d)
+  print(data.shape)
   b = Basemap(projection='npstere',boundinglat=50,lon_0=-90,resolution='l', round=True)
   x, y = b(lons2d, lats2d)
 
@@ -151,20 +152,29 @@ for per in period:
         if init:
 
           fq_925 = arq.variables['FQ_925'][:][0]
+          fq_925 = fq_925[np.newaxis,:,:]
           fq_850 = arq.variables['FQ_850'][:][0]
+          fq_850 = fq_850[np.newaxis,:,:]
  #         dt_925 = arq.variables['DT_925'][:]
  #         dt_850 = arq.variables['DT_850'][:]
  #         dtdz_925 = arq.variables['DTDZ_925'][:]
  #         dtdz_850 = arq.variables['DTDZ_850'][:]
 
-          lats2d = arq.variables['lat']
-          lons2d = arq.variables['lon']
+          lats2d = arq.variables['lat'][:]
+          lons2d = arq.variables['lon'][:]
+          #print(lats2d.shape)
+          #print(lons2d.shape)
           init = False
 
         else:
 
-          fq_925 = np.vstack((arq.variables['FQ_925'][:][0], fq_925))
-          fq_850 = np.vstack((arq.variables['FQ_850'][:][0], fq_850))
+          aux1 = arq.variables['FQ_925'][:][0]
+          aux1 = aux1[np.newaxis,:,:]
+          aux2 = arq.variables['FQ_850'][:][0]
+          aux2 = aux2[np.newaxis,:,:]          
+
+          fq_925 = np.vstack((aux1, fq_925))
+          fq_850 = np.vstack((aux2, fq_850))
  #         dt_925 = np.vstack((arq.variables['DT_925'][:], dt_925 ))
  #         dt_850 = np.vstack((arq.variables['DT_850'][:], dt_850))
  #         dtdz_925 = np.vstack((arq.variables['DTDZ_925'][:], dtdz_925))
@@ -181,7 +191,10 @@ for per in period:
       if initV:
 
         fq_925v = arq.variables['FQ_925'][:][0]
+        fq_925v = fq_925v[np.newaxis,:,:]
         fq_850v = arq.variables['FQ_850'][:][0]
+        fq_850v = fq_850v[np.newaxis,:,:]
+
  #       dt_925v = arq.variables['DT_925'][:]
  #       dt_850v = arq.variables['DT_850'][:]
  #       dtdz_925v = arq.variables['DTDZ_925'][:]
@@ -191,8 +204,16 @@ for per in period:
 
       else:
 
-        fq_925v = np.vstack((arq.variables['FQ_925'][:][0], fq_925v))
-        fq_850v = np.vstack((arq.variables['FQ_850'][:][0], fq_850v))
+        aux1 = arq.variables['FQ_925'][:][0]
+        aux1 = aux1[np.newaxis,:,:]
+        aux2 = arq.variables['FQ_850'][:][0]
+        aux2 = aux2[np.newaxis,:,:]
+
+        fq_925v = np.vstack((aux1, fq_925v))
+        fq_850v = np.vstack((aux2, fq_850v))
+
+#        fq_925v = np.vstack((arq.variables['FQ_925'][:][0], fq_925v))
+#        fq_850v = np.vstack((arq.variables['FQ_850'][:][0], fq_850v))
  #       dt_925v = np.vstack((arq.variables['DT_925'][:], dt_925v ))
  #       dt_850v = np.vstack((arq.variables['DT_850'][:], dt_850v))
  #       dtdz_925v = np.vstack((arq.variables['DTDZ_925'][:], dtdz_925v))
@@ -214,6 +235,8 @@ for per in period:
   
   # Saving things to pickle to save processing time.
   #save_pickle(pickle_folder, per, 'dt_850', t_test, p, mean1, std1, mean2, std2)
+  #print(fq_925.shape)
+  #sys.exit()
 
   t_test_925, p_925, mean_925, mean_925v, std_925, std_925v = calcStats(fq_925, fq_925v)
     

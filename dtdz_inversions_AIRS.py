@@ -70,7 +70,7 @@ def main():
     # Open the monthly files
     for yy in range(datai, dataf+1):
 
-        for mm in range(1,13):
+        for mm in range(12,13):
 
             print(yy, mm)
 

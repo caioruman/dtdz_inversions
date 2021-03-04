@@ -108,7 +108,7 @@ lons2d = arq.variables['lon'][:]
 from matplotlib.colors import  ListedColormap
 # Open the monthly files
 vars = ['dt_925', 'dt_850', 'fq_925', 'fq_850', 'dtdz_925', 'dtdz_850']
-vars = ['fq_925', 'fq_850']
+#vars = ['fq_925', 'fq_850']
 for per in period:
   for var in vars:
   
@@ -146,7 +146,9 @@ for per in period:
       if per[1] == "JJA":
         values = np.linspace(-4.5, 4.5, len(colors)+1)
       mean_gem = mean_gem*100   # original units: K/dm
+      std_gem = std_gem*100
       mean_airs = mean_airs*1000 # original units: K/m
+      std_airs = std_airs*1000
     else:
       values = np.linspace(-100, 100, len(colors)+1)
       mean_gem = mean_gem*100
@@ -184,6 +186,17 @@ for per in period:
 
     figName = "fig_{0}_{1}_{2}_meanAIRS".format(datai, var, per[1])
     plotMaps_pcolormesh(mean_airs, figName, values, cmap, lons2d, lats2d)
+
+    values = np.arange(0, np.max(std_gem), 10)
+
+    figName = "fig_{0}_{1}_{2}_stdGEM".format(datai, var, per[1])
+    
+    plotMaps_pcolormesh(std_gem, figName, values, cmap, lons2d, lats2d)
+
+    values = np.arange(0, np.max(std_airs), 10)
+
+    figName = "fig_{0}_{1}_{2}_stdAIRS".format(datai, var, per[1])
+    plotMaps_pcolormesh(std_airs, figName, values, cmap, lons2d, lats2d)
 
     # plotting std
   

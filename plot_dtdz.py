@@ -152,21 +152,21 @@ for per in period:
 
     # Plotting the values
 
-    colors = ['#ffffff', '#ffffd9','#edf8b1','#c7e9b4','#7fcdbb','#41b6c4','#1d91c0','#225ea8','#253494','#081d58']
-
+    #colors = ['#ffffff', '#ffffd9','#edf8b1','#c7e9b4','#7fcdbb','#41b6c4','#1d91c0','#225ea8','#253494','#081d58']
+    colors = ['#ffffff','#ffffe5','#fff7bc','#fee391','#fec44f','#fe9929','#ec7014','#cc4c02','#993404','#662506']
     if (var == "dt_925" or var == "dt_850"):
-      values = np.arange(0,14,1.5)
+      values = np.arange(0,12,1.5)
       
     elif (var == "dtdz_925" or var == "dtdz_850"):
-      values = np.arange(0,14,1.5)
-      mean_gem = mean_gem*100   # original units: K/dm
-      mean_airs = mean_airs*1000 # original units: K/m
+      values = np.arange(0,12,1.5)
+      #mean_gem = mean_gem*100   # original units: K/dm
+      #mean_airs = mean_airs*1000 # original units: K/m
     else:
       values = np.arange(0,101,10)
       colors = ['#ffffff', '#f7fcf0','#e0f3db','#ccebc5','#a8ddb5','#7bccc4','#4eb3d3','#2b8cbe','#0868ac','#084081']
 
     cmap = mpl.colors.ListedColormap(colors)
-    
+
     figName = "fig_{0}_{1}_{2}_meanGEM".format(datai, var, per[1])
     
     plotMaps_pcolormesh(mean_gem, figName, values, cmap, lons2d, lats2d)
@@ -174,8 +174,7 @@ for per in period:
     figName = "fig_{0}_{1}_{2}_meanAIRS".format(datai, var, per[1])
     plotMaps_pcolormesh(mean_airs, figName, values, cmap, lons2d, lats2d)
 
-    # plotting std / covariance
-
+    # plotting std
   
-
-    #plotMaps_pcolormesh(data, figName, values, cmap, lons2d, lats2d, stations, var)
+        #
+    

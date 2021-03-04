@@ -127,24 +127,54 @@ for per in period:
 
   # Figures for the mean and std of each variable, 
 
+    # Plotting the differences
+
     figName = "fig_{0}_{1}_{2}".format(datai, var, per[1])
-
-    data = mean_gem - mean_airs
-
-    values = np.arange(-12,13,2)
     
     colors = ['#a50026', '#d73027', '#f46d43', '#fdae61', '#fee090', "#ffffff", "#ffffff", '#e0f3f8', '#abd9e9', '#74add1', '#4575b4', '#313695']
-    #colors = [(255,255,255),(255,249,190),(255,223,34),(248,159,28),(243,111,33),(239,66,36),(238,40,35),(208,40,35),(189,36,41),(241,105,160)]
-    #colors = np.array(colors)/255.
+  
     v = abs(max(np.nanmax(data), np.nanmin(data), key=abs))
 
-    values = np.linspace(-v, v, len(colors)+1)
-    values = np.linspace(-9, 9, len(colors)+1)
+    if (var == "dt_925" or var == "dt_850"):
+      values = np.linspace(-9, 9, len(colors)+1)
+    elif (var == "dtdz_925" or var == "dtdz_850"):
+      values = np.linspace(-v, v, len(colors)+1)
+      mean_gem = mean_gem*100   # original units: K/dm
+      mean_airs = mean_airs*1000 # original units: K/m
+    else:
+      values = np.linspace(-v, v, len(colors)+1)
+
+    data = mean_gem - mean_airs
 
     cmap = mpl.colors.ListedColormap(colors)
 
     plotMaps_pcolormesh(data, figName, values, cmap, lons2d, lats2d)
-    sys.exit()
+
+    # Plotting the values
+
+    colors = ['#ffffff', '#ffffd9','#edf8b1','#c7e9b4','#7fcdbb','#41b6c4','#1d91c0','#225ea8','#253494','#081d58']
+
+    if (var == "dt_925" or var == "dt_850"):
+      values = np.arange(0,14,1.5)
+      
+    elif (var == "dtdz_925" or var == "dtdz_850"):
+      values = np.arange(0,14,1.5)
+      mean_gem = mean_gem*100   # original units: K/dm
+      mean_airs = mean_airs*1000 # original units: K/m
+    else:
+      values = np.arange(0,101,10)
+      colors = ['#ffffff', '#f7fcf0','#e0f3db','#ccebc5','#a8ddb5','#7bccc4','#4eb3d3','#2b8cbe','#0868ac','#084081']
+
+    figName = "fig_{0}_{1}_{2}_meanGEM".format(datai, var, per[1])
+    
+    plotMaps_pcolormesh(mean_gem, figName, values, cmap, lons2d, lats2d)
+
+    figName = "fig_{0}_{1}_{2}_meanAIRS".format(datai, var, per[1])
+    plotMaps_pcolormesh(mean_airs, figName, values, cmap, lons2d, lats2d)
+
+    # plotting std / covariance
+    
+    #sys.exit()
   
         #
     if var == "DZ" or var == "ZBAS":

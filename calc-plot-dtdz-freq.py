@@ -54,6 +54,17 @@ def plotMaps_pcolormesh(data, figName, values, mapa, lons2d, lats2d):
   #b.drawparallels(parallels,labels=[True,True,True,True], fontsize=16)
   meridians = np.arange(0.,351.,45.)
   b.drawmeridians(meridians,labels=[True,True,True,True], fontsize=16)
+#   for item in stations:
+# #        print(item)
+# #        print(stations)
+# #        print
+#     x, y = b(item[1], item[0])
+#     if var == "DT" or var == "DT0" or var == "DT12":
+#       vv = item[2]
+#     else:
+#       vv = item[3]
+
+#     img = b.scatter(x, y, c=vv, s=80, cmap=mapa, norm=bn, edgecolors='black')
 
   plt.subplots_adjust(top=0.75, bottom=0.25)
 

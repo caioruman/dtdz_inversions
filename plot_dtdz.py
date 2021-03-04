@@ -137,7 +137,9 @@ for per in period:
     #colors = [(255,255,255),(255,249,190),(255,223,34),(248,159,28),(243,111,33),(239,66,36),(238,40,35),(208,40,35),(189,36,41),(241,105,160)]
     #colors = np.array(colors)/255.
     v = abs(max(np.nanmax(data), np.nanmin(data), key=abs))
-    values = np.linspace(-v, v, len(colors))
+
+    values = np.linspace(-v, v, len(colors)+1)
+    values = np.linspace(-9, 9, len(colors)+1)
 
     cmap = mpl.colors.ListedColormap(colors)
 

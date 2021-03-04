@@ -141,7 +141,7 @@ for per in period:
 
     cmap = mpl.colors.ListedColormap(colors)
 
-    plotMaps_pcolormesh(data, figName, values, cmap, lons2d, lats2d, var)
+    plotMaps_pcolormesh(data, figName, values, cmap, lons2d, lats2d)
     sys.exit()
   
         #

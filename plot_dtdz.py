@@ -108,7 +108,7 @@ lons2d = arq.variables['lon'][:]
 from matplotlib.colors import  ListedColormap
 # Open the monthly files
 vars = ['dt_925', 'dt_850', 'fq_925', 'fq_850', 'dtdz_925', 'dtdz_850']
-
+vars = ['fq_925', 'fq_850']
 for per in period:
   for var in vars:
   
@@ -121,7 +121,9 @@ for per in period:
     std_gem = pickle.load( open('{0}/{4}_std_GEM-ERA_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var), "rb"))
     mean_airs = pickle.load( open('{0}/{4}_mean_AIRS_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var), "rb"))
     std_airs = pickle.load( open('{0}/{4}_std_AIRS_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var), "rb"))
-  
+    
+#    print(mean_airs.shape)
+#    print(mean_airs)
     #sig = p.copy()
     #sig[p > 0.05] = np.nan
 
@@ -137,12 +139,20 @@ for per in period:
 
     if (var == "dt_925" or var == "dt_850"):
       values = np.linspace(-9, 9, len(colors)+1)
+      if per[1] == "JJA":
+        values = np.linspace(-4.5, 4.5, len(colors)+1)
     elif (var == "dtdz_925" or var == "dtdz_850"):
       values = np.linspace(-9, 9, len(colors)+1)
+      if per[1] == "JJA":
+        values = np.linspace(-4.5, 4.5, len(colors)+1)
       mean_gem = mean_gem*100   # original units: K/dm
       mean_airs = mean_airs*1000 # original units: K/m
     else:
       values = np.linspace(-100, 100, len(colors)+1)
+      mean_gem = mean_gem*100
+      mean_airs = mean_airs*100
+      print(mean_gem.shape)
+      print(mean_airs.shape)
 
     data = mean_gem - mean_airs
 
@@ -153,12 +163,13 @@ for per in period:
     # Plotting the values
 
     #colors = ['#ffffff', '#ffffd9','#edf8b1','#c7e9b4','#7fcdbb','#41b6c4','#1d91c0','#225ea8','#253494','#081d58']
-    colors = ['#ffffff','#ffffe5','#fff7bc','#fee391','#fec44f','#fe9929','#ec7014','#cc4c02','#993404','#662506']
+#    colors = ['#ffffff','#ffffe5','#fff7bc','#fee391','#fec44f','#fe9929','#ec7014','#cc4c02','#993404','#662506']
+    colors = ['#ffffff','#ffffcc','#ffeda0','#fed976','#feb24c','#fd8d3c','#fc4e2a','#e31a1c','#bd0026','#800026']
     if (var == "dt_925" or var == "dt_850"):
-      values = np.arange(0,12,1.5)
+      values = np.arange(0,13,1.5)
       
     elif (var == "dtdz_925" or var == "dtdz_850"):
-      values = np.arange(0,12,1.5)
+      values = np.arange(0,13,1.5)
       #mean_gem = mean_gem*100   # original units: K/dm
       #mean_airs = mean_airs*1000 # original units: K/m
     else:

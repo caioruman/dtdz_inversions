@@ -19,8 +19,8 @@ from netCDF4 import Dataset
 import pickle
 
 
-datai = 1976
-dataf = 2005
+datai = 2003
+dataf = 2015
 
 def plotMaps_pcolormesh(data, figName, values, mapa, lons2d, lats2d, stations, var):
   '''
@@ -150,12 +150,12 @@ for per in period:
         
         if init:
 
-          fq_925 = arq.variables['FQ_925'][:]
-          fq_850 = arq.variables['FQ_850'][:]
-          dt_925 = arq.variables['DT_925'][:]
-          dt_850 = arq.variables['DT_850'][:]
-          dtdz_925 = arq.variables['DTDZ_925'][:]
-          dtdz_850 = arq.variables['DTDZ_850'][:]
+          fq_925 = arq.variables['FQ_925'][:][0]
+          fq_850 = arq.variables['FQ_850'][:][0]
+ #         dt_925 = arq.variables['DT_925'][:]
+ #         dt_850 = arq.variables['DT_850'][:]
+ #         dtdz_925 = arq.variables['DTDZ_925'][:]
+ #         dtdz_850 = arq.variables['DTDZ_850'][:]
 
           lats2d = arq.variables['lat']
           lons2d = arq.variables['lon']
@@ -163,54 +163,62 @@ for per in period:
 
         else:
 
-          fq_925 = np.vstack((arq.variables['FQ_925'][:], fq_925))
-          fq_850 = np.vstack((arq.variables['FQ_850'][:], fq_850))
-          dt_925 = np.vstack((arq.variables['DT_925'][:], dt_925 ))
-          dt_850 = np.vstack((arq.variables['DT_850'][:], dt_850))
-          dtdz_925 = np.vstack((arq.variables['DTDZ_925'][:], dtdz_925))
-          dtdz_850 = np.vstack((arq.variables['DTDZ_850'][:], dtdz_850))
+          fq_925 = np.vstack((arq.variables['FQ_925'][:][0], fq_925))
+          fq_850 = np.vstack((arq.variables['FQ_850'][:][0], fq_850))
+ #         dt_925 = np.vstack((arq.variables['DT_925'][:], dt_925 ))
+ #         dt_850 = np.vstack((arq.variables['DT_850'][:], dt_850))
+ #         dtdz_925 = np.vstack((arq.variables['DTDZ_925'][:], dtdz_925))
+ #         dtdz_850 = np.vstack((arq.variables['DTDZ_850'][:], dtdz_850))
 
         arq.close()
       # adding the variables to the array/list
-
+#      print(fq_925.shape)
       # Opening the AIRS files
       ff = "{0}/{1}/Inversion_{1}{2:02d}.crcm5grid.nc".format(val_folder, year, month)
-      #print(ff)
+#      print(ff)
       arq = Dataset(ff, 'r')
 
       if initV:
 
-        fq_925v = arq.variables['FQ_925'][:]
-        fq_850v = arq.variables['FQ_850'][:]
-        dt_925v = arq.variables['DT_925'][:]
-        dt_850v = arq.variables['DT_850'][:]
-        dtdz_925v = arq.variables['DTDZ_925'][:]
-        dtdz_850v = arq.variables['DTDZ_850'][:]
+        fq_925v = arq.variables['FQ_925'][:][0]
+        fq_850v = arq.variables['FQ_850'][:][0]
+ #       dt_925v = arq.variables['DT_925'][:]
+ #       dt_850v = arq.variables['DT_850'][:]
+ #       dtdz_925v = arq.variables['DTDZ_925'][:]
+ #       dtdz_850v = arq.variables['DTDZ_850'][:]
 
         initV = False
 
       else:
 
-        fq_925v = np.vstack((arq.variables['FQ_925'][:], fq_925v))
-        fq_850v = np.vstack((arq.variables['FQ_850'][:], fq_850v))
-        dt_925v = np.vstack((arq.variables['DT_925'][:], dt_925v ))
-        dt_850v = np.vstack((arq.variables['DT_850'][:], dt_850v))
-        dtdz_925v = np.vstack((arq.variables['DTDZ_925'][:], dtdz_925v))
-        dtdz_850v = np.vstack((arq.variables['DTDZ_850'][:], dtdz_850v))
+        fq_925v = np.vstack((arq.variables['FQ_925'][:][0], fq_925v))
+        fq_850v = np.vstack((arq.variables['FQ_850'][:][0], fq_850v))
+ #       dt_925v = np.vstack((arq.variables['DT_925'][:], dt_925v ))
+ #       dt_850v = np.vstack((arq.variables['DT_850'][:], dt_850v))
+ #       dtdz_925v = np.vstack((arq.variables['DTDZ_925'][:], dtdz_925v))
+ #       dtdz_850v = np.vstack((arq.variables['DTDZ_850'][:], dtdz_850v))
 
       arq.close()
+#      fq_925v[fq_925v > 1] = 20
+#      print(fq_925v.shape)
+#      print((fq_925v == 20).sum())
+    
+#      sys.exit()
 
-  t_test, p, mean1, mean2, std1, std2 = calcStats(dt_925, dt_925v)
+  #t_test, p, mean1, mean2, std1, std2 = calcStats(dt_925, dt_925v)
   
   # Saving things to pickle to save processing time.
-  save_pickle(pickle_folder, per, 'dt_925', t_test, p, mean1, std1, mean2, std2)
+  #save_pickle(pickle_folder, per, 'dt_925', t_test, p, mean1, std1, mean2, std2)
 
-  t_test, p, mean1, mean2, std1, std2 = calcStats(dt_850, dt_850v)
+  #t_test, p, mean1, mean2, std1, std2 = calcStats(dt_850, dt_850v)
   
   # Saving things to pickle to save processing time.
-  save_pickle(pickle_folder, per, 'dt_850', t_test, p, mean1, std1, mean2, std2)
+  #save_pickle(pickle_folder, per, 'dt_850', t_test, p, mean1, std1, mean2, std2)
 
   t_test, p, mean1, mean2, std1, std2 = calcStats(fq_925, fq_925v)
+  print(fq_925.shape)
+  print(mean1)
+  print(mean2)
   
   # Saving things to pickle to save processing time.
   save_pickle(pickle_folder, per, 'fq_925', t_test, p, mean1, std1, mean2, std2)
@@ -220,15 +228,15 @@ for per in period:
   # Saving things to pickle to save processing time.
   save_pickle(pickle_folder, per, 'fq_850', t_test, p, mean1, std1, mean2, std2)
 
-  t_test, p, mean1, mean2, std1, std2 = calcStats(dtdz_925, dtdz_925v)
+  #t_test, p, mean1, mean2, std1, std2 = calcStats(dtdz_925, dtdz_925v)
   
   # Saving things to pickle to save processing time.
-  save_pickle(pickle_folder, per, 'dtdz_925', t_test, p, mean1, std1, mean2, std2)
+  #save_pickle(pickle_folder, per, 'dtdz_925', t_test, p, mean1, std1, mean2, std2)
 
-  t_test, p, mean1, mean2, std1, std2 = calcStats(dtdz_850, dtdz_850v)
+  #t_test, p, mean1, mean2, std1, std2 = calcStats(dtdz_850, dtdz_850v)
   
   # Saving things to pickle to save processing time.
-  save_pickle(pickle_folder, per, 'dtdz_850', t_test, p, mean1, std1, mean2, std2)
+  #save_pickle(pickle_folder, per, 'dtdz_850', t_test, p, mean1, std1, mean2, std2)
   
   #sig = p[p < 0.05]
 

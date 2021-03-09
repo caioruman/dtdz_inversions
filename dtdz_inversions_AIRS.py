@@ -170,7 +170,8 @@ def main():
             #pickle.dump(deltaT_925, open('{0}/{1}/inversion_deltaT925_{1}{2:02d}.p'.format(output_folder, yy, mm), "wb"))
 
             vars=[("FQ_925", frequency_925), ("DT_925", deltaT_925), ("DTDZ_925", dtdz_925),
-                ("FQ_850", frequency_850), ("DT_850", deltaT_850), ("DTDZ_850", dtdz_850)]
+                ("FQ_850", frequency_850), ("DT_850", deltaT_850), ("DTDZ_850", dtdz_850),
+                ("T2M", t2m), ("TT_925", tt[:,1,:,:]), ("TT_850", tt[:,2,:,:])]
 
             #
             #for var in vars:
@@ -303,7 +304,8 @@ def save_netcdf_1d(fname, vars, datefield, lat, lon, tempo, tt):
         var_nc.missing_value = np.nan
         if (var[0] == "FQ_925" or var[0] == "FQ_850"):
 #            print(var[1])
-            var_nc[0,:,:] = var[1]           
+            var_nc[0,:,:] = var[1]     
+            var_nc.time = 1      
         else:
             var_nc[:,:,:] = var[1]
 

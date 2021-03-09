@@ -70,7 +70,7 @@ def main():
     # Open the monthly files
     for yy in range(datai, dataf+1):
 
-        for mm in range(12,13):
+        for mm in range(1,13):
 
             print(yy, mm)
 
@@ -305,7 +305,7 @@ def save_netcdf_1d(fname, vars, datefield, lat, lon, tempo, tt):
         if (var[0] == "FQ_925" or var[0] == "FQ_850"):
 #            print(var[1])
             var_nc[0,:,:] = var[1]     
-            var_nc.time = 1      
+            #var_nc.time = 1      
         else:
             var_nc[:,:,:] = var[1]
 

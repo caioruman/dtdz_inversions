@@ -107,7 +107,7 @@ lons2d = arq.variables['lon'][:]
 
 from matplotlib.colors import  ListedColormap
 # Open the monthly files
-vars = ['dt_925', 'dt_850', 'fq_925', 'fq_850', 'dtdz_925', 'dtdz_850']
+vars = ['dt_925', 'dt_850', 'dtdz_925', 'dtdz_850']
 #vars = ['fq_925', 'fq_850']
 for per in period:
   for var in vars:
@@ -187,17 +187,30 @@ for per in period:
     figName = "fig_{0}_{1}_{2}_meanAIRS".format(datai, var, per[1])
     plotMaps_pcolormesh(mean_airs, figName, values, cmap, lons2d, lats2d)
 
-    values = np.arange(0, np.max(std_gem), 10)
+    # Standard Deviation and Coefficient of Variation
+    values = np.arange(0, 11, 1)
 
     figName = "fig_{0}_{1}_{2}_stdGEM".format(datai, var, per[1])
     
     plotMaps_pcolormesh(std_gem, figName, values, cmap, lons2d, lats2d)
 
-    values = np.arange(0, np.max(std_airs), 10)
+    values = np.arange(0, 11, 1)
 
     figName = "fig_{0}_{1}_{2}_stdAIRS".format(datai, var, per[1])
     plotMaps_pcolormesh(std_airs, figName, values, cmap, lons2d, lats2d)
 
+    values = np.arange(0, 2.1, 0.2)
+
+    figName = "fig_{0}_{1}_{2}_CVGEM".format(datai, var, per[1])
+
+    plotMaps_pcolormesh(std_gem/mean_gem, figName, values, cmap, lons2d, lats2d)
+
+    values = np.arange(0, 2.1, 0.2)
+
+    figName = "fig_{0}_{1}_{2}_CVAIRS".format(datai, var, per[1])
+    plotMaps_pcolormesh(std_airs/mean_airs, figName, values, cmap, lons2d, lats2d)
+
+   
     # plotting std
   
         #

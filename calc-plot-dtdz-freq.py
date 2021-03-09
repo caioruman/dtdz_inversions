@@ -257,10 +257,14 @@ for per in period:
   #v = abs(max(np.nanmax(data), np.nanmin(data), key=abs))
 
   values = np.linspace(-100, 100, len(colors)+1)
+  values = np.linspace(-60,60,13)
   mean_925 = mean_925*100
   mean_925v = mean_925v*100
   
   data = mean_925 - mean_925v
+
+  data[data > 70] = np.nan
+  data[data < -70] = np.nan
 
   cmap = mpl.colors.ListedColormap(colors)
 
@@ -287,11 +291,14 @@ for per in period:
 
   #v = abs(max(np.nanmax(data), np.nanmin(data), key=abs))
 
-  values = np.linspace(-100, 100, len(colors)+1)
+  values = np.linspace(-60, 60, len(colors)+1)
   mean_850 = mean_850*100
   mean_850v = mean_850v*100
   
   data = mean_850 - mean_850v
+
+  data[data > 70] = np.nan
+  data[data < -70] = np.nan
 
   cmap = mpl.colors.ListedColormap(colors)
 

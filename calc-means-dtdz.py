@@ -128,97 +128,76 @@ period = [[(12, 1, 2), "DJF"], [(6, 7, 8), "JJA"]]
 
 name = "GEMCAM_RCP85"
 
+# The arrays are too large to load all variables at once
+var = ["FQ_925", "FQ_850", "DT_925", "DT_850", "DTDZ_925", "DTDZ_850"]
+
 from matplotlib.colors import  ListedColormap
 # Open the monthly files
 
-for per in period:
+for vv in var:
+  for per in period:
 
-  init = True
+    init = True
 
-  #for year in range(datai, dataf+1):
-  for i in range(0, 30):
-    year = datai + i
-    yearf = dataif + i
+    #for year in range(datai, dataf+1):
+    for i in range(0, 30):
+      year = datai + i
+      yearf = dataif + i
     
-    for month in per[0]:
-      print(year, month)
+      for month in per[0]:
+        print(year, month)
       
-      # Opening the model file
-      for ee in exp:
-        ff = "{0}/{3}/{1}/Inversion_{1}{2:02d}.nc".format(main_folder, year, month, ee)
+        # Opening the model file
+        for ee in exp:
+          ff = "{0}/{3}/{1}/Inversion_{1}{2:02d}.nc".format(main_folder, year, month, ee)
 
-        fff = "{0}/{3}/{1}/Inversion_{1}{2:02d}.nc".format(main_folder, yearf, month, ee)
-        #print(ff)
-        arq = Dataset(ff, 'r')
+          fff = "{0}/{3}/{1}/Inversion_{1}{2:02d}.nc".format(main_folder, yearf, month, ee)
+          print(ff)
+          sys.exit()
+          arq = Dataset(ff, 'r')
 
-        arqf = Dataset(fff, 'r')
+          arqf = Dataset(fff, 'r')
         
-        if init:
+          if init:
 
-          fq_925 = arq.variables['FQ_925'][:]
-          fq_850 = arq.variables['FQ_850'][:]
-          dt_925 = arq.variables['DT_925'][:]
-          dt_850 = arq.variables['DT_850'][:]
-          dtdz_925 = arq.variables['DTDZ_925'][:]
-          dtdz_850 = arq.variables['DTDZ_850'][:]
+            if (vv == "FQ_925" or vv == "FQ_850"):
 
-          fq_925v = arqf.variables['FQ_925'][:]
-          fq_850v = arqf.variables['FQ_850'][:]
-          dt_925v = arqf.variables['DT_925'][:]
-          dt_850v = arqf.variables['DT_850'][:]
-          dtdz_925v = arqf.variables['DTDZ_925'][:]
-          dtdz_850v = arqf.variables['DTDZ_850'][:]
+              aux = arq.variables[vv][:][0]
+              aux = aux[np.newaxis,:,:]
 
-          lats2d = arq.variables['lat']
-          lons2d = arq.variables['lon']
-          init = False
+              aux_f = arqf.variables[vv][:][0]
+              aux_f = aux[np.newaxis,:,:]
 
-        else:
+            else:
+              aux = arq.variables[vv][:]
+  
+              aux_f = arqf.variables[vv][:]
 
-          fq_925 = np.vstack((arq.variables['FQ_925'][:], fq_925))
-          fq_850 = np.vstack((arq.variables['FQ_850'][:], fq_850))
-          dt_925 = np.vstack((arq.variables['DT_925'][:], dt_925 ))
-          dt_850 = np.vstack((arq.variables['DT_850'][:], dt_850))
-          dtdz_925 = np.vstack((arq.variables['DTDZ_925'][:], dtdz_925))
-          dtdz_850 = np.vstack((arq.variables['DTDZ_850'][:], dtdz_850))
+            lats2d = arq.variables['lat']
+            lons2d = arq.variables['lon']
+            init = False
 
-          fq_925v = np.vstack((arqf.variables['FQ_925'][:], fq_925v))
-          fq_850v = np.vstack((arqf.variables['FQ_850'][:], fq_850v))
-          dt_925v = np.vstack((arqf.variables['DT_925'][:], dt_925v ))
-          dt_850v = np.vstack((arqf.variables['DT_850'][:], dt_850v))
-          dtdz_925v = np.vstack((arqf.variables['DTDZ_925'][:], dtdz_925v))
-          dtdz_850v = np.vstack((arqf.variables['DTDZ_850'][:], dtdz_850v))
+          else:
 
-        arq.close()
-        arqf.close()
+            if (vv == "FQ_925" or vv == "FQ_850"):
+              aux1 = arq.variables[vv][:][0]
+              aux = np.vstack((aux1[np.newaxis,:,:], aux))
+
+              aux1 = arqf.variables[vv][:][0]
+              aux_f = np.vstack((aux1[np.newaxis,:,:], aux_f))
+
+            else:
+              aux = np.vstack((arq.variables[vv][:], aux))
+
+              aux_f = np.vstack((arqf.variables[vv][:], aux_f))
+
+          arq.close()
+          arqf.close()
       # adding the variables to the array/list
 
-  t_test, p, mean1, mean2, std1, std2 = calcStats(dt_925, dt_925v)
+    t_test, p, mean1, mean2, std1, std2 = calcStats(aux, aux_f)
 
-  # Saving things to pickle to save processing time.
-  save_pickle(pickle_folder, per[1], 'dt_925', t_test, p, mean1, std1, mean2, std2, name)
+    # Saving things to pickle to save processing time.
+    save_pickle(pickle_folder, per[1], vv, t_test, p, mean1, std1, mean2, std2, name)
+    print('file saved', vv, per[1])
 
-  t_test, p, mean1, mean2, std1, std2 = calcStats(dt_850, dt_850v)
-  
-  # Saving things to pickle to save processing time.
-  save_pickle(pickle_folder, per[1], 'dt_850', t_test, p, mean1, std1, mean2, std2, name)
-
-  t_test, p, mean1, mean2, std1, std2 = calcStats(fq_925, fq_925v)
-  
-  # Saving things to pickle to save processing time.
-  save_pickle(pickle_folder, per[1], 'fq_925', t_test, p, mean1, std1, mean2, std2, name)
-
-  t_test, p, mean1, mean2, std1, std2 = calcStats(fq_850, fq_850v)
-  
-  # Saving things to pickle to save processing time.
-  save_pickle(pickle_folder, per[1], 'fq_850', t_test, p, mean1, std1, mean2, std2, name)
-
-  t_test, p, mean1, mean2, std1, std2 = calcStats(dtdz_925, dtdz_925v)
-  
-  # Saving things to pickle to save processing time.
-  save_pickle(pickle_folder, per[1], 'dtdz_925', t_test, p, mean1, std1, mean2, std2, name)
-
-  t_test, p, mean1, mean2, std1, std2 = calcStats(dtdz_850, dtdz_850v)
-  
-  # Saving things to pickle to save processing time.
-  save_pickle(pickle_folder, per[1], 'dtdz_850', t_test, p, mean1, std1, mean2, std2, name)

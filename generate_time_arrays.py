@@ -15,7 +15,8 @@ def main():
   lon = dp.variables['lon'][:]
   dp.close()
 
-  for m in np.arange(1, 13):
+  for m in np.arange(2, 13):
+    print(m)
     year_i = 2003
     year_f = 2003
     m_f = m+1
@@ -24,7 +25,7 @@ def main():
       m_f = 1
     tempo = np.arange(datetime(year_i,m,1,3,0), datetime(year_f,m_f,1,3,0), timedelta(hours=3)).astype(datetime)
 
-    t_arr = np.empty((248,172,172), dtype=object)
+    t_arr = np.empty((len(tempo),172,172), dtype=object)
     t, i, j = t_arr.shape
 
     for i in range(0, lon.shape[0]):

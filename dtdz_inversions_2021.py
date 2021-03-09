@@ -166,7 +166,8 @@ def main():
             #    ("FQ_TG", freq_top_g), ("DT_TG", mean_deltaT_top_g), ("FQ_DIF", freq_diff), ("DT_DIF", mean_diff)]
     #        vars=[("FREQ", mean_fr), ("DT", mean_dt)]
             vars=[("FQ_925", frequency_925), ("DT_925", deltaT_925), ("DTDZ_925", dtdz_925),
-                  ("FQ_850", frequency_850), ("DT_850", deltaT_850), ("DTDZ_850", dtdz_850)]
+                  ("FQ_850", frequency_850), ("DT_850", deltaT_850), ("DTDZ_850", dtdz_850),
+                  ("T2M", tt_dm), ("TT_925", tt[3,:,:,:]), ("TT_850", tt[5,:,:,:])]
 
             #
             #for var in vars:
@@ -259,7 +260,7 @@ def save_netcdf(fname, vars, datefield, lat, lon, tempo):
     ny = 172
 #    tempo = 8
     #tempo = 1
-    data_tipo = "3 hourly"
+    data_tipo = "hours"
 
     # Precisa mudar para utilizar o caminho completo
     ncfile = Dataset('{0}'.format(fname), 'w')

@@ -107,11 +107,14 @@ def main():
 
             # Temperature
             var = r_dp.get_4d_field('TT')
-            dates_tt = list(sorted(var.keys()))
+            #dates_tt = list(sorted(var.keys()))
             #print(var[dates_tt[0]].keys())
-            level_tt = [*var[dates_tt[0]].keys()]
+            #level_tt = [*var[dates_tt[0]].keys()]
 
             level_tt = toXarray(var)
+
+            print(level_tt)
+            sys.exit()
             
             #print(level_tt)
             #levels = [lev for lev in var.sorted_levels]

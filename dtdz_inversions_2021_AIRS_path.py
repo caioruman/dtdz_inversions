@@ -101,6 +101,7 @@ def main():
 
 
             r_dp = RPN(arq_dp)
+            print(arq_dp)
     #        r_pm = RPN(arq_pm)
             r_dm = RPN(arq_dm)
 

@@ -5,6 +5,8 @@ import sys
 import calendar
 import argparse
 
+from collections import OrderedDict
+
 import numpy.ma as ma
 
 from glob import glob
@@ -108,22 +110,23 @@ def main():
 
             # Temperature
             var = r_dp.get_4d_field('TT')
-            #dates_tt = list(sorted(var.keys()))
+            dates_tt = list(sorted(var.keys()))
             #print(var[dates_tt[0]].keys())
-            #level_tt = [*var[dates_tt[0]].keys()]
-
-            level_tt = toXarray(var)
-
-            print(level_tt)
-            sys.exit()
+            level_tt = [*var[dates_tt[0]].keys()]
             
-            #print(level_tt)
             #levels = [lev for lev in var.sorted_levels]
 
             var_3d = []
             for key in level_tt:
                 var_3d.append(np.asarray([var[d][key] for d in dates_tt]))
             tt = np.array(var_3d) + 273.15
+
+            lons2d, lats2d = r_dm.get_longitudes_and_latitudes_for_the_last_read_rec()
+
+            tt_test = toXarray(tt[3,:,:,:], lons2d, lats2d, dates_tt)
+
+            print(tt_test)
+            sys.exit()
             #print(tt.shape)
             #sys.exit()
 
@@ -147,7 +150,7 @@ def main():
             var_3d = np.asarray([var[d][key] for d in dates_tt])
             tt_dm = var_3d.copy() + 273.15
 
-            lons2d, lats2d = r_dm.get_longitudes_and_latitudes_for_the_last_read_rec()
+            
 
             tim = tt.shape[1]
             ii = tt.shape[2]
@@ -313,28 +316,24 @@ def save_netcdf(fname, vars, datefield, lat, lon, tempo):
 #    data.close()
 
 
-def toXarray(var):
+def toXarray(var_data, lons2d, lats2d, data_range):
     """
-    Create an xarray interface for the RPN data.
-    Requires the xarray and dask packages.
-
-    function adapted from: https://github.com/neishm/fstd2nc/
+    
     """
-    from collections import OrderedDict
-    import xarray as xr
-    out = OrderedDict()
 
-    out[var.name] = xr.DataArray(data=var.array, dims=var.dims, name=var.name, attrs=var.atts)   
-
-    # Construct the Dataset from all the variables.
-    out = xr.Dataset(out)
-    # Decode CF metadata
-    out = xr.conventions.decode_cf(out)
-
+    ds = xr.Dataset(
+        {"var_name": (("time", "lon", "lat"), var_data)},
+        coords={
+            "lon": lons2d,
+            "lat": lats2d,
+            "time": data_range,
+        }
+    )
+    
     # Make the time dimension unlimited when writing to netCDF.
-    out.encoding['unlimited_dims'] = ('time',)
+    ds.encoding['unlimited_dims'] = ('time',)
 
-    return out
+    return ds
 
 if __name__ == '__main__':
     main()

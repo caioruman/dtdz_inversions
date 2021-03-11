@@ -121,7 +121,7 @@ def main():
                 var_3d.append(np.asarray([var[d][key] for d in dates_tt]))
             tt = np.array(var_3d) + 273.15
 
-            lons2d, lats2d = r_dm.get_longitudes_and_latitudes_for_the_last_read_rec()
+            lons2d, lats2d = r_dp.get_longitudes_and_latitudes_for_the_last_read_rec()
 
             tt_test = toXarray(tt[3,:,:,:], lons2d, lats2d, dates_tt)
 

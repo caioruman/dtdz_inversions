@@ -322,7 +322,8 @@ def toXarray(var_data, lons2d, lats2d, data_range):
     """
 
     ds = xr.Dataset(
-        {"var_name": (("time", "lon", "lat"), var_data)},
+        {"var_name": (("time", "x", "y"), var_data)},
+        dims=["time", "x", "y"],
         coords={
             "lon": lons2d,
             "lat": lats2d,

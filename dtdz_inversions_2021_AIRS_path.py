@@ -69,7 +69,7 @@ def main():
     # On cedar
     main_folder = "/home/cruman/projects/rrg-sushama-ab/teufel/{0}".format(exp)
     #output_folder = "/home/cruman/projects/rrg-sushama-ab/cruman/{0}".format(exp)
-    output_folder = "/home/cruman/scratch/inversion/{0}".format(exp)
+    output_folder = "/home/cruman/scratch/inversion2/{0}".format(exp)
 
     #eticket = "PAN_ERAI_DEF"
     #eticket = "PAN_CAN85_CT"
@@ -123,14 +123,9 @@ def main():
             lons2d, lats2d = r_dp.get_longitudes_and_latitudes_for_the_last_read_rec()
 
             ds = createXarray(lons2d, lats2d, dates_tt)
-            ds = addVarXarray(ds, ("TT_850", tt[3,:,:,:]), "K", lons2d, lats2d, dates_tt)
 
-            #tt_test = toXarray(tt[3,:,:,:], lons2d, lats2d, dates_tt)
-
-            print(ds)
-            sys.exit()
-            #print(tt.shape)
-            #sys.exit()
+            ds = addVarXarray(ds, ("TT_850", tt[5,:,:,:]), "K", lons2d, lats2d, dates_tt)
+            ds = addVarXarray(ds, ("TT_920", tt[3,:,:,:]), "K", lons2d, lats2d, dates_tt)
 
             var = r_dp.get_4d_field('GZ')
             dates_tt = list(sorted(var.keys())) 
@@ -139,6 +134,9 @@ def main():
             for key in level_tt:
                 var_3d.append(np.asarray([var[d][key] for d in dates_tt]))
             gz = np.array(var_3d)
+
+            ds = addVarXarray(ds, ("GZ_850", gz[5,:,:,:]), "dm", lons2d, lats2d, dates_tt)
+            ds = addVarXarray(ds, ("GZ_920", gz[3,:,:,:]), "dm", lons2d, lats2d, dates_tt)
     #        tt = r_dp.variables['TT']
 
             # Temperature on pressure levels
@@ -152,53 +150,59 @@ def main():
             var_3d = np.asarray([var[d][key] for d in dates_tt])
             tt_dm = var_3d.copy() + 273.15
 
+            ds = addVarXarray(ds, ("T2M", tt_dm, "K", lons2d, lats2d, dates_tt)
+
+            # Resampling the array
+            ds = ds.resample(time="1H", loffset='30min').interpolate("linear")
+
+            t_arr_22 = pickle.load( open( "/home/cruman/scratch/time_array_sample_day_22times_boolean.p", "rb" ) )
+            t_arr_24 = pickle.load( open( "/home/cruman/scratch/time_array_sample_day_24times_boolean.p", "rb" ) )
+
+            # apply the algoritm
+            # Getting only data where the local time is 1h30
+            ini = True
+            for k in np.arange(1,dates_tt.shape[0]/8):
+                if ini:
+                    t_arr = np.vstack((t_arr_22, t_arr_24))
+                    ini = False
+                else:
+                    t_arr = np.vstack((t_arr, t_arr_24))
             
 
-            tim = tt.shape[1]
-            ii = tt.shape[2]
-            jj = tt.shape[3]
+            t_arr[t_arr==0] = np.nan
 
-            #start_time = time.time()
+            # Applying np.nan where t_arr equals np.nan
+            ds_airs_like = xr.where(t_arr==1, ds, t_arr)
 
-            datefield = datetime(yy, mm, 1, 0, 0, 0)
+            # Now I can do the inversion calculations.
 
-            #mean_deltaT, frequency, mean_deltaT_bottom, freq_bot, mean_deltaT_middle, freq_mid, mean_deltaT_top, freq_top, mean_deltaT_bottom_g, freq_bot_g, mean_deltaT_middle_g, freq_mid_g, mean_deltaT_top_g, freq_top_g, mean_diff, freq_diff  = inversion_calculations(tt[0,:,:,:], tt[3,:,:,:], tt[1,:,:,:], tt[2,:,:,:])
-
-            deltaT_925, dtdz_925, frequency_925, deltaT_850, dtdz_850, frequency_850 = inversion_calculations(tt_dm, tt[3,:,:,:], tt[5,:,:,:], gz[3,:,:,:], gz[5,:,:,:])
-            
-            len_time = float(deltaT_925.shape[0])
-            #print(deltaT_925)
-            #print(dtdz_925)
-            #print(frequency_925)
+            deltaT_925, dtdz_925, frequency_925, deltaT_850, dtdz_850, frequency_850 = inversion_calculations(ds.T2M, ds.TT_925, ds.TT_850, ds.GZ_925, ds.GZ_850)
 
             fname = "{2}/{0}/Inversion_{0}{1:02d}.nc".format(yy, mm, output_folder)
+
             Path("{0}/{1}".format(output_folder, yy)).mkdir(parents=True, exist_ok=True)
 
-            #save_pickle(yy, mm, output_folder, deltaT_925)
-            #pickle.dump(deltaT_925, open('{0}/{1}/inversion_deltaT925_{1}{2:02d}.p'.format(output_folder, yy, mm), "wb"))
+            vars=[("FQ_925", frequency_925, "%"), ("DT_925", deltaT_925, "K"), ("DTDZ_925", dtdz_925, "K/dm"),
+                  ("FQ_850", frequency_850, "%"), ("DT_850", deltaT_850, "K"), ("DTDZ_850", dtdz_850, "K/dm"),
+                  ("T2M", ds.T2M, "K"), ("TT_925", ds.TT_925, "K"), ("TT_850", ds.TT_850, "K")]
 
-            #vars=[("FREQ", frequency), ("DT", mean_deltaT), ("FQ_B", freq_bot), ("DT_B", mean_deltaT_bottom), ("FQ_M", freq_mid), ("DT_M", mean_deltaT_middle),
-            #    ("FQ_T", freq_top), ("DT_T", mean_deltaT_top), ("FQ_BG", freq_bot_g), ("DT_BG", mean_deltaT_bottom_g), ("FQ_MG", freq_mid_g), ("DT_MG", mean_deltaT_middle_g),
-            #    ("FQ_TG", freq_top_g), ("DT_TG", mean_deltaT_top_g), ("FQ_DIF", freq_diff), ("DT_DIF", mean_diff)]
-    #        vars=[("FREQ", mean_fr), ("DT", mean_dt)]
-            vars=[("FQ_925", frequency_925), ("DT_925", deltaT_925), ("DTDZ_925", dtdz_925),
-                  ("FQ_850", frequency_850), ("DT_850", deltaT_850), ("DTDZ_850", dtdz_850),
-                  ("T2M", tt_dm), ("TT_925", tt[3,:,:,:]), ("TT_850", tt[5,:,:,:])]
-
+            ds2 = createXarray(lons2d, lats2d, ds.time)
             #
-            #for var in vars:
-            #    pickle.dump(var[1], open('{0}/{1}/inversion_{3}_{1}{2:02d}.p'.format(output_folder, yy, mm, var[0]), "wb"))
+            for var in vars:
+                if (var[0] == "FQ_925" or var[0] == "FQ_850"):
+                    ds2 = addVarXarray(ds2, (var[0], var[1], var[2], lons2d, lats2d, ds.time[0])
+                else:
+                    ds2 = addVarXarray(ds2, (var[0], var[1], var[2], lons2d, lats2d, ds.time)
             
 
+            ds.to_netcdf(fname)
 
-
-            save_netcdf(fname, vars, datefield, lats2d, lons2d, len_time)
             #sys.exit()
             r_dp.close()
             #r_pm.close()
             r_dm.close()
 
-            #sys.exit()
+            sys.exit()
 
 #exp = "PanArctic_0.5d_CanHisto_NOCTEM_RUN"
 #main_folder = "/glacier/caioruman/GEM/Output/{0}".format(exp)
@@ -351,6 +355,7 @@ def addVarXarray(ds, var_data, unit, lons2d, lats2d, data_range):
         attrs  = {
         '_FillValue': np.nan,
         'units'     : unit,
+        'missing_value': np.nan,
         }
     )
     

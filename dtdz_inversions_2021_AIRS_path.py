@@ -150,7 +150,7 @@ def main():
             var_3d = np.asarray([var[d][key] for d in dates_tt])
             tt_dm = var_3d.copy() + 273.15
 
-            ds = addVarXarray(ds, ("T2M", tt_dm, "K", lons2d, lats2d, dates_tt)
+            ds = addVarXarray(ds, ("T2M", tt_dm, "K", lons2d, lats2d, dates_tt))
 
             # Resampling the array
             ds = ds.resample(time="1H", loffset='30min').interpolate("linear")

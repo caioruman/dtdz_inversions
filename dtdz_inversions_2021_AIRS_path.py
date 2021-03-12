@@ -202,7 +202,7 @@ def main():
                     ds2 = addVarXarray(ds2, (var[0], var[1], var[2]), lons2d, lats2d, ds.time)
             
             print("saving netcdf")
-            ds.to_netcdf(fname)
+            ds2.to_netcdf(fname)
 
             #sys.exit()
             #r_dp.close()

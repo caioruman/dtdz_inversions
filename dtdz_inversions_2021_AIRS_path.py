@@ -148,6 +148,10 @@ def main():
             var_3d = np.asarray([var[d][key] for d in dates_tt])
             tt_dm = var_3d.copy() + 273.15
 
+            r_dp.close()
+            #r_pm.close()
+            r_dm.close()
+
             ds = addVarXarray(ds, ("T2M", tt_dm, "K"), lons2d, lats2d, dates_tt)
 
             # Resampling the array
@@ -201,9 +205,9 @@ def main():
             ds.to_netcdf(fname)
 
             #sys.exit()
-            r_dp.close()
+            #r_dp.close()
             #r_pm.close()
-            r_dm.close()
+            #r_dm.close()
 
             sys.exit()
 

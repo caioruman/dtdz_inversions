@@ -240,6 +240,7 @@ def inversion_calculations(t2m, tt_925, tt_850, gz_925, gz_850):
     aux = deltaT_925.copy()*np.nan
     count_bool = np.less_equal(deltaT_925, 0)
     # change to xr.where
+    print(count_bool.shape, deltaT_925.shape, aux.shape)
     deltaT_925 = xr.where(count_bool, deltaT_925, aux)
     dtdz_925 = xr.where(count_bool, dtdz_925, aux)
     #np.copyto(deltaT_925, aux, where=count_bool)

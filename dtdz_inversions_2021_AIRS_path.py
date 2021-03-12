@@ -82,7 +82,7 @@ def main():
 
         for mm in range(1,13):
 
-            # Pressure level file
+            
             print(yy, mm)
             #if yy == 1979 and mm == 1:
             #    k = 1
@@ -90,14 +90,10 @@ def main():
             k = 0
 
             #print("{0}/Samples/{1}_{2}{3:02d}/dp*".format(main_folder, exp, yy, mm))
-    #        print k
+    # Pressure level file
             arq_dp = glob("{0}/Samples/{1}_{2}{3:02d}/dp*".format(main_folder, exp, yy, mm))[k]
-            #print "{0}/Samples/{1}_{2}{3:02d}/dp*".format(main_folder, exp, yy, mm)
-            #print arq_dp
-            #sys.exit()
 
             # Surface file
-            #print("{0}/Samples/{1}_{2}{3:02d}/dm*".format(main_folder, exp, yy, mm))
             arq_dm = glob("{0}/Samples/{1}_{2}{3:02d}/dm*".format(main_folder, exp, yy, mm))[k]
 
             # Physics file
@@ -155,8 +151,11 @@ def main():
             ds = addVarXarray(ds, ("T2M", tt_dm, "K"), lons2d, lats2d, dates_tt)
 
             # Resampling the array
+            print("starting th resample")
             ds = ds.resample(time="1H", loffset='30min').interpolate("linear")
 
+            print("finish resample")
+            # Loading the local time arrays
             t_arr_22 = pickle.load( open( "/home/cruman/scratch/time_array_sample_day_22times_boolean.p", "rb" ) )
             t_arr_24 = pickle.load( open( "/home/cruman/scratch/time_array_sample_day_24times_boolean.p", "rb" ) )
 
@@ -174,9 +173,11 @@ def main():
             t_arr[t_arr==0] = np.nan
 
             # Applying np.nan where t_arr equals np.nan
+            print("Applying np.nan where the local time isnt 1h30")
             ds_airs_like = xr.where(t_arr==1, ds, t_arr)
 
             # Now I can do the inversion calculations.
+            print("Calculating inversions")
 
             deltaT_925, dtdz_925, frequency_925, deltaT_850, dtdz_850, frequency_850 = inversion_calculations(ds.T2M, ds.TT_925, ds.TT_850, ds.GZ_925, ds.GZ_850)
 
@@ -196,7 +197,7 @@ def main():
                 else:
                     ds2 = addVarXarray(ds2, (var[0], var[1], var[2]), lons2d, lats2d, ds.time)
             
-
+            print("saving netcdf")
             ds.to_netcdf(fname)
 
             #sys.exit()
@@ -205,28 +206,6 @@ def main():
             r_dm.close()
 
             sys.exit()
-
-#exp = "PanArctic_0.5d_CanHisto_NOCTEM_RUN"
-#main_folder = "/glacier/caioruman/GEM/Output/{0}".format(exp)
-#eticket = "PAN_CAN85_CT"
-
-#r_MF = RPN("/glacier/caioruman/Data/Geophys/PanArctic0.5/pan_artic_mf_0.5")
-
-#Z_surface = np.squeeze(r_MF.variables['MF'][:])
-
-#r_MF.close()
-
-def save_pickle(yy, mm, output_folder, data):
-
-    pickle.dump(data, open('{0}/{1}/inversion_deltaT925_{1}{2:02d}.p'.format(output_folder, yy, mm), "wb"))
-
-    return None
-
-def replace_nan(data):
-
-    data[data == np.nan] = -999
-
-    return data
 
 def inversion_calculations(t2m, tt_925, tt_850, gz_925, gz_850):
     """
@@ -271,66 +250,6 @@ def inversion_calculations(t2m, tt_925, tt_850, gz_925, gz_850):
     
 #    return mean_dt_time, mean_fr_time
     return deltaT_925, dtdz_925, frequency_925, deltaT_850, dtdz_850, frequency_850
-
-
-def save_netcdf(fname, vars, datefield, lat, lon, tempo):
-
-    """
-    obsolete with the xarray function
-    """
-
-    nx = 172
-    ny = 172
-#    tempo = 8
-    #tempo = 1
-    data_tipo = "hours"
-
-    # Precisa mudar para utilizar o caminho completo
-    ncfile = Dataset('{0}'.format(fname), 'w')
-    #varcontent.shape = (nlats, nlons)
-
-    # Crio as dimensoes latitude, longitude e tempo
-    ncfile.createDimension('x', nx)
-    ncfile.createDimension('y', ny)
-    ncfile.createDimension('time', None)
-
-    # Crio as variaveis latitude, longitude e tempo
-    # createVariable( NOMEVAR, TIPOVAR, DIMENSOES )
-    lats_nc = ncfile.createVariable('lat', np.dtype("float32").char, ('y','x'))
-    lons_nc = ncfile.createVariable('lon', np.dtype("float32").char, ('y','x'))
-    time = ncfile.createVariable('time', 'i4', ('time',))
-
-    # Unidades
-    lats_nc.units = 'degrees_north'
-    lats_nc._CoordinateAxisType = "Lat"
-    lons_nc.units = 'degrees_east'
-    lons_nc._CoordinateAxisType = "Lon"
-    time.units = '{1} since {0}'.format(datefield.strftime('%Y-%m-%d %H:%M'), data_tipo)
-
-    #Writing lat and lon
-    lats_nc[:] = lat
-    lons_nc[:] = lon
-    time[0] = datefield.toordinal()
-
-    # write data to variables along record (unlimited) dimension.
-    # same data is written for each record.
-    for var in vars:
-        #print(var[1].shape)
-        #print(var[0])
-        var_nc = ncfile.createVariable(var[0], np.dtype('float32').char, ('time', 'y', 'x'))
-        var_nc.units = "some unit"
-        var_nc.coordinates = "lat lon"
-        var_nc.grid_desc = "rotated_pole"
-        var_nc.cell_methods = "time: point"
-        var_nc.missing_value = np.nan
-        if (var[0] == "FQ_925" or var[0] == "FQ_850"):
-            var_nc[0,:,:] = var[1]
-        else:
-            var_nc[:,:,:] = var[1]
-
-    # close the file.
-    ncfile.close()
-#    data.close()
 
 
 def createXarray(lons2d, lats2d, data_range):

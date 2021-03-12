@@ -344,7 +344,7 @@ def createXarray(lons2d, lats2d, data_range):
 
     return ds
 
-def addVarXarray(ds, var_data, unit, lons2d, lats2d, data_range):
+def addVarXarray(ds, var_data, lons2d, lats2d, data_range):
     """
     
     """

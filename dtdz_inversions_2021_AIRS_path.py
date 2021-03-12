@@ -256,12 +256,18 @@ def inversion_calculations(t2m, tt_925, tt_850, gz_925, gz_850):
     # purging negative values
     aux = deltaT_925.copy()*np.nan
     count_bool = np.less_equal(deltaT_925, 0)
-    np.copyto(deltaT_925, aux, where=count_bool)
-    np.copyto(dtdz_925, aux, where=count_bool)
+    # change to xr.where
+    deltaT_925 = xr.where(count_bool, deltaT_925, aux)
+    dtdz_925 = xr.where(count_bool, dtdz_925, aux)
+    #np.copyto(deltaT_925, aux, where=count_bool)
+    #np.copyto(dtdz_925, aux, where=count_bool)
 
     count_bool = np.less_equal(deltaT_850, 0)
-    np.copyto(deltaT_850, aux, where=count_bool)
-    np.copyto(dtdz_850, aux, where=count_bool)
+    # change to xr.where
+    deltaT_850 = xr.where(count_bool, deltaT_850, aux)
+    dtdz_850 = xr.where(count_bool, dtdz_850, aux)
+    #np.copyto(deltaT_850, aux, where=count_bool)
+    #np.copyto(dtdz_850, aux, where=count_bool)
     
 #    return mean_dt_time, mean_fr_time
     return deltaT_925, dtdz_925, frequency_925, deltaT_850, dtdz_850, frequency_850

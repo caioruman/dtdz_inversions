@@ -209,7 +209,7 @@ def main():
             #r_pm.close()
             #r_dm.close()
 
-            sys.exit()
+            #sys.exit()
 
 def inversion_calculations(t2m, tt_925, tt_850, gz_925, gz_850):
     """

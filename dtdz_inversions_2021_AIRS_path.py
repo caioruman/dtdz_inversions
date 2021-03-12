@@ -127,7 +127,7 @@ def main():
             ds = createXarray(lons2d, lats2d, dates_tt)
 
             ds = addVarXarray(ds, ("TT_850", tt[5,:,:,:], "K"), lons2d, lats2d, dates_tt)
-            ds = addVarXarray(ds, ("TT_920", tt[3,:,:,:], "K"), lons2d, lats2d, dates_tt)
+            ds = addVarXarray(ds, ("TT_925", tt[3,:,:,:], "K"), lons2d, lats2d, dates_tt)
 
             var = r_dp.get_4d_field('GZ')
             dates_tt = list(sorted(var.keys())) 
@@ -138,7 +138,7 @@ def main():
             gz = np.array(var_3d)
 
             ds = addVarXarray(ds, ("GZ_850", gz[5,:,:,:], "dm"), lons2d, lats2d, dates_tt)
-            ds = addVarXarray(ds, ("GZ_920", gz[3,:,:,:], "dm"), lons2d, lats2d, dates_tt)
+            ds = addVarXarray(ds, ("GZ_925", gz[3,:,:,:], "dm"), lons2d, lats2d, dates_tt)
     #        tt = r_dp.variables['TT']
 
             # Temperature on pressure levels

@@ -107,7 +107,6 @@ def main():
     #        r_pm = RPN(arq_pm)
             r_dm = RPN(arq_dm)
 
-
             # Temperature
             var = r_dp.get_4d_field('TT')
             dates_tt = list(sorted(var.keys()))
@@ -123,9 +122,12 @@ def main():
 
             lons2d, lats2d = r_dp.get_longitudes_and_latitudes_for_the_last_read_rec()
 
-            tt_test = toXarray(tt[3,:,:,:], lons2d, lats2d, dates_tt)
+            ds = createXarray(lons2d, lats2d, dates_tt)
+            ds = addVarXarray(ds, ("TT_850", tt[3,:,:,:]), "K", lons2d, lats2d, dates_tt)
 
-            print(tt_test)
+            #tt_test = toXarray(tt[3,:,:,:], lons2d, lats2d, dates_tt)
+
+            print(ds)
             sys.exit()
             #print(tt.shape)
             #sys.exit()
@@ -186,6 +188,9 @@ def main():
             #
             #for var in vars:
             #    pickle.dump(var[1], open('{0}/{1}/inversion_{3}_{1}{2:02d}.p'.format(output_folder, yy, mm, var[0]), "wb"))
+            
+
+
 
             save_netcdf(fname, vars, datefield, lats2d, lons2d, len_time)
             #sys.exit()
@@ -316,23 +321,41 @@ def save_netcdf(fname, vars, datefield, lat, lon, tempo):
 #    data.close()
 
 
-def toXarray(var_data, lons2d, lats2d, data_range):
+def createXarray(lons2d, lats2d, data_range):
     """
     
     """
-
     ds = xr.Dataset(
-        {"var_name": (("time", "x", "y"), var_data)},
-        dims=["time", "x", "y"],
-        coords={
-            "lon": lons2d,
-            "lat": lats2d,
-            "time": data_range,
-        }
+        coords=dict(
+            lon=(["y", "x"], lons2d),
+            lat=(["y", "x"], lats2d),
+            time=data_range,
+            #reference_time=reference_time,
+        ),
+        attrs=dict(description="Temperature Inversion related data."),
     )
     
     # Make the time dimension unlimited when writing to netCDF.
     ds.encoding['unlimited_dims'] = ('time',)
+
+    return ds
+
+def addVarXarray(ds, var_data, unit, lons2d, lats2d, data_range):
+    """
+    
+    """
+    da = xr.DataArray(
+        data = var_data[1],
+        dims=["time", "y", "x"],
+        coords={"lat": (("y", "x"), lats2d), "lon": (("y", "x"), lons2d), "time": data_range},
+        attrs  = {
+        '_FillValue': np.nan,
+        'units'     : unit,
+        }
+    )
+    
+    ds = ds.assign(var=da)
+    ds = ds.rename({"var": var_data[0]})
 
     return ds
 

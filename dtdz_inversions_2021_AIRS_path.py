@@ -7,6 +7,8 @@ import argparse
 
 from collections import OrderedDict
 
+import pickle
+
 import numpy.ma as ma
 
 from glob import glob

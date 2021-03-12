@@ -280,7 +280,7 @@ def addVarXarray(ds, var_data, lons2d, lats2d, data_range):
     """
     
     """
-    if var_data[0] == "FREQ_850" or var_data[0] == "FREQ_925":
+    if var_data[0] == "FQ_850" or var_data[0] == "FQ_925":
         da = xr.DataArray(
             data = var_data[1],
             dims=["y", "x"],

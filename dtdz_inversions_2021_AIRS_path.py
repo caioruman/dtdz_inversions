@@ -163,7 +163,7 @@ def main():
             # apply the algoritm
             # Getting only data where the local time is 1h30
             ini = True
-            for k in np.arange(1,dates_tt.shape[0]/8):
+            for k in np.arange(1,len(dates_tt)/8):
                 if ini:
                     t_arr = np.vstack((t_arr_22, t_arr_24))
                     ini = False

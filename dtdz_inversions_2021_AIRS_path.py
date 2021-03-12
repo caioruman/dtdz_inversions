@@ -279,16 +279,28 @@ def addVarXarray(ds, var_data, lons2d, lats2d, data_range):
     """
     
     """
-    da = xr.DataArray(
-        data = var_data[1],
-        dims=["time", "y", "x"],
-        coords={"lat": (("y", "x"), lats2d), "lon": (("y", "x"), lons2d), "time": data_range},
-        attrs  = {
-        '_FillValue': np.nan,
-        'units'     : var_data[2],
-        'missing_value': np.nan,
-        }
-    )
+    if len(data_range) == 1:
+        da = xr.DataArray(
+            data = var_data[1],
+            dims=["y", "x"],
+            coords={"lat": (("y", "x"), lats2d), "lon": (("y", "x"), lons2d)},
+            attrs  = {
+            '_FillValue': np.nan,
+            'units'     : var_data[2],
+            'missing_value': np.nan,
+            }
+        )
+    else:
+        da = xr.DataArray(
+            data = var_data[1],
+            dims=["time", "y", "x"],
+            coords={"lat": (("y", "x"), lats2d), "lon": (("y", "x"), lons2d), "time": data_range},
+            attrs  = {
+            '_FillValue': np.nan,
+            'units'     : var_data[2],
+            'missing_value': np.nan,
+            }
+        )
     
     ds = ds.assign(var=da)
     ds = ds.rename({"var": var_data[0]})

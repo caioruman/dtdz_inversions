@@ -124,8 +124,8 @@ def main():
 
             ds = createXarray(lons2d, lats2d, dates_tt)
 
-            ds = addVarXarray(ds, ("TT_850", tt[5,:,:,:]), "K", lons2d, lats2d, dates_tt)
-            ds = addVarXarray(ds, ("TT_920", tt[3,:,:,:]), "K", lons2d, lats2d, dates_tt)
+            ds = addVarXarray(ds, ("TT_850", tt[5,:,:,:], "K"), lons2d, lats2d, dates_tt)
+            ds = addVarXarray(ds, ("TT_920", tt[3,:,:,:], "K"), lons2d, lats2d, dates_tt)
 
             var = r_dp.get_4d_field('GZ')
             dates_tt = list(sorted(var.keys())) 
@@ -135,8 +135,8 @@ def main():
                 var_3d.append(np.asarray([var[d][key] for d in dates_tt]))
             gz = np.array(var_3d)
 
-            ds = addVarXarray(ds, ("GZ_850", gz[5,:,:,:]), "dm", lons2d, lats2d, dates_tt)
-            ds = addVarXarray(ds, ("GZ_920", gz[3,:,:,:]), "dm", lons2d, lats2d, dates_tt)
+            ds = addVarXarray(ds, ("GZ_850", gz[5,:,:,:], "dm"), lons2d, lats2d, dates_tt)
+            ds = addVarXarray(ds, ("GZ_920", gz[3,:,:,:], "dm"), lons2d, lats2d, dates_tt)
     #        tt = r_dp.variables['TT']
 
             # Temperature on pressure levels
@@ -150,7 +150,7 @@ def main():
             var_3d = np.asarray([var[d][key] for d in dates_tt])
             tt_dm = var_3d.copy() + 273.15
 
-            ds = addVarXarray(ds, ("T2M", tt_dm, "K", lons2d, lats2d, dates_tt))
+            ds = addVarXarray(ds, ("T2M", tt_dm, "K"), lons2d, lats2d, dates_tt)
 
             # Resampling the array
             ds = ds.resample(time="1H", loffset='30min').interpolate("linear")
@@ -190,9 +190,9 @@ def main():
             #
             for var in vars:
                 if (var[0] == "FQ_925" or var[0] == "FQ_850"):
-                    ds2 = addVarXarray(ds2, (var[0], var[1], var[2], lons2d, lats2d, ds.time[0])
+                    ds2 = addVarXarray(ds2, (var[0], var[1], var[2]), lons2d, lats2d, ds.time[0])
                 else:
-                    ds2 = addVarXarray(ds2, (var[0], var[1], var[2], lons2d, lats2d, ds.time)
+                    ds2 = addVarXarray(ds2, (var[0], var[1], var[2]), lons2d, lats2d, ds.time)
             
 
             ds.to_netcdf(fname)
@@ -354,7 +354,7 @@ def addVarXarray(ds, var_data, unit, lons2d, lats2d, data_range):
         coords={"lat": (("y", "x"), lats2d), "lon": (("y", "x"), lons2d), "time": data_range},
         attrs  = {
         '_FillValue': np.nan,
-        'units'     : unit,
+        'units'     : var_data[2],
         'missing_value': np.nan,
         }
     )

@@ -226,30 +226,31 @@ def inversion_calculations(t2m, tt_925, tt_850, gz_925, gz_850):
 
     len_time = float(deltaT_925.shape[0])
 
-    count_bool = np.greater(deltaT_925, 0)
-    count = np.count_nonzero(count_bool.astype(np.int), axis=0)
+    count_bool_925 = np.greater(deltaT_925, 0)
+    count = np.count_nonzero(count_bool_925.astype(np.int), axis=0)
 
     frequency_925 = count/len_time
 
-    count_bool = np.greater(deltaT_850, 0)
-    count = np.count_nonzero(count_bool.astype(np.int), axis=0)
+    count_bool_850 = np.greater(deltaT_850, 0)
+    count = np.count_nonzero(count_bool_850.astype(np.int), axis=0)
 
     frequency_850 = count/len_time
 
     # purging negative values
     aux = deltaT_925.copy()*np.nan
-    count_bool = np.less_equal(deltaT_925, 0)
+    c#ound_bool_925 = np.greater(deltaT_925, 0)
+    #count_bool = np.less_equal(deltaT_925, 0)
     # change to xr.where
-    print(count_bool.shape, deltaT_925.shape, aux.shape)
-    deltaT_925 = xr.where(count_bool, deltaT_925, aux)
-    dtdz_925 = xr.where(count_bool, dtdz_925, aux)
+    #print(count_bool.shape, deltaT_925.shape, aux.shape)
+    deltaT_925 = xr.where(count_bool_925, deltaT_925, aux)
+    dtdz_925 = xr.where(count_bool_925, dtdz_925, aux)
     #np.copyto(deltaT_925, aux, where=count_bool)
     #np.copyto(dtdz_925, aux, where=count_bool)
 
-    count_bool = np.less_equal(deltaT_850, 0)
+    #count_bool = np.less_equal(deltaT_850, 0)
     # change to xr.where
-    deltaT_850 = xr.where(count_bool, deltaT_850, aux)
-    dtdz_850 = xr.where(count_bool, dtdz_850, aux)
+    deltaT_850 = xr.where(count_bool_850, deltaT_850, aux)
+    dtdz_850 = xr.where(count_bool_850, dtdz_850, aux)
     #np.copyto(deltaT_850, aux, where=count_bool)
     #np.copyto(dtdz_850, aux, where=count_bool)
     

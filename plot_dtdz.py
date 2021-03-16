@@ -119,7 +119,7 @@ for per in period:
 
   for var in vars:
     
-    mean_gem = arq.variables[var][:]
+    mean_gem = arq.variables[var.upper()][:]
     lats2d = arq.variables['lat'][:]
     lons2d = arq.variables['lon'][:]
 

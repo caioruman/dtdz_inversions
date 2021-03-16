@@ -160,6 +160,8 @@ for per in period:
       #std_gem = std_gem*100
       mean_airs = mean_airs*1000 # original units: K/m
       #std_airs = std_airs*1000
+    elif (var == "t2m" or var == "tt_850" or var == "tt_925"):
+      values = np.linspace(-9, 9, len(colors)+1)
     else:
       values = np.linspace(-100, 100, len(colors)+1)
       mean_gem = mean_gem*100
@@ -185,6 +187,8 @@ for per in period:
       values = np.arange(0,13,1.5)
       #mean_gem = mean_gem*100   # original units: K/dm
       #mean_airs = mean_airs*1000 # original units: K/m
+    elif (var == "t2m" or var == "tt_850" or var == "tt_925"):
+      values = np.arange(263,284,2)
     else:
       values = np.arange(0,101,10)
       colors = ['#ffffff', '#f7fcf0','#e0f3db','#ccebc5','#a8ddb5','#7bccc4','#4eb3d3','#2b8cbe','#0868ac','#084081']

@@ -110,6 +110,7 @@ dic = '/pixel/project01/cruman/ModelData/GEM_SIMS/PanArctic_0.5d_ERAINT_NOCTEM_R
 from matplotlib.colors import  ListedColormap
 # Open the monthly files
 vars = ['dt_925', 'dt_850', 'dtdz_925', 'dtdz_850', 'tt_850', 'tt_925', 't2m']
+vars = ['tt_850', 'tt_925', 't2m']
 
 #vars = ['fq_925', 'fq_850']
 for per in period:

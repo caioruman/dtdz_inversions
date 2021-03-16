@@ -143,34 +143,34 @@ for per in period:
       print(year, month)
       
       # Opening the model file
-      for ee in exp:
-        ff = "{0}/{3}/{1}/Inversion_{1}{2:02d}.nc".format(main_folder, year, month, ee)
-        #print(ff)
-        arq = Dataset(ff, 'r')
+#       for ee in exp:
+#         ff = "{0}/{3}/{1}/Inversion_{1}{2:02d}.nc".format(main_folder, year, month, ee)
+#         #print(ff)
+#         arq = Dataset(ff, 'r')
         
-        if init:
+#         if init:
 
-#          fq_925 = arq.variables['FQ_925'][:][0]
-#          fq_850 = arq.variables['FQ_850'][:][0]
-          dt_925 = arq.variables['DT_925'][:]
-          dt_850 = arq.variables['DT_850'][:]
-          dtdz_925 = arq.variables['DTDZ_925'][:]
-          dtdz_850 = arq.variables['DTDZ_850'][:]
+# #          fq_925 = arq.variables['FQ_925'][:][0]
+# #          fq_850 = arq.variables['FQ_850'][:][0]
+#           dt_925 = arq.variables['DT_925'][:]
+#           dt_850 = arq.variables['DT_850'][:]
+#           dtdz_925 = arq.variables['DTDZ_925'][:]
+#           dtdz_850 = arq.variables['DTDZ_850'][:]
 
-          lats2d = arq.variables['lat']
-          lons2d = arq.variables['lon']
-          init = False
+#           lats2d = arq.variables['lat']
+#           lons2d = arq.variables['lon']
+#           init = False
 
-        else:
+#         else:
 
- #         fq_925 = np.vstack((arq.variables['FQ_925'][:][0], fq_925))
- #         fq_850 = np.vstack((arq.variables['FQ_850'][:][0], fq_850))
-          dt_925 = np.vstack((arq.variables['DT_925'][:], dt_925 ))
-          dt_850 = np.vstack((arq.variables['DT_850'][:], dt_850))
-          dtdz_925 = np.vstack((arq.variables['DTDZ_925'][:], dtdz_925))
-          dtdz_850 = np.vstack((arq.variables['DTDZ_850'][:], dtdz_850))
+#  #         fq_925 = np.vstack((arq.variables['FQ_925'][:][0], fq_925))
+#  #         fq_850 = np.vstack((arq.variables['FQ_850'][:][0], fq_850))
+#           dt_925 = np.vstack((arq.variables['DT_925'][:], dt_925 ))
+#           dt_850 = np.vstack((arq.variables['DT_850'][:], dt_850))
+#           dtdz_925 = np.vstack((arq.variables['DTDZ_925'][:], dtdz_925))
+#           dtdz_850 = np.vstack((arq.variables['DTDZ_850'][:], dtdz_850))
 
-        arq.close()
+#         arq.close()
       # adding the variables to the array/list
 #      print(fq_925.shape)
       # Opening the AIRS files
@@ -182,10 +182,13 @@ for per in period:
 
  #       fq_925v = arq.variables['FQ_925'][:][0]
  #       fq_850v = arq.variables['FQ_850'][:][0]
-        dt_925v = arq.variables['DT_925'][:]
-        dt_850v = arq.variables['DT_850'][:]
-        dtdz_925v = arq.variables['DTDZ_925'][:]
-        dtdz_850v = arq.variables['DTDZ_850'][:]
+        #dt_925v = arq.variables['DT_925'][:]
+        #dt_850v = arq.variables['DT_850'][:]
+        #dtdz_925v = arq.variables['DTDZ_925'][:]
+        #dtdz_850v = arq.variables['DTDZ_850'][:]
+        tt_850v = arq.variables['TT_850'][:]
+        tt_925v = arq.variables['TT_925'][:]
+        tt_t2mv = arq.variables['T2M'][:]
 
         initV = False
 
@@ -193,10 +196,14 @@ for per in period:
 
  #       fq_925v = np.vstack((arq.variables['FQ_925'][:][0], fq_925v))
  #       fq_850v = np.vstack((arq.variables['FQ_850'][:][0], fq_850v))
-        dt_925v = np.vstack((arq.variables['DT_925'][:], dt_925v ))
-        dt_850v = np.vstack((arq.variables['DT_850'][:], dt_850v))
-        dtdz_925v = np.vstack((arq.variables['DTDZ_925'][:], dtdz_925v))
-        dtdz_850v = np.vstack((arq.variables['DTDZ_850'][:], dtdz_850v))
+        #dt_925v = np.vstack((arq.variables['DT_925'][:], dt_925v ))
+        #dt_850v = np.vstack((arq.variables['DT_850'][:], dt_850v))
+        #dtdz_925v = np.vstack((arq.variables['DTDZ_925'][:], dtdz_925v))
+        #dtdz_850v = np.vstack((arq.variables['DTDZ_850'][:], dtdz_850v))
+
+        tt_850v = np.vstack((arq.variables['TT_850'][:], tt_850v))
+        tt_925v = np.vstack((arq.variables['TT_925'][:], tt_925v))
+        tt_t2mv = np.vstack((arq.variables['T2M'][:], tt_t2mv))
 
       arq.close()
 #      fq_925v[fq_925v > 1] = 20
@@ -205,15 +212,30 @@ for per in period:
     
 #      sys.exit()
 
-  t_test, p, mean1, mean2, std1, std2 = calcStats(dt_925, dt_925v)
+  t_test, p, mean1, mean2, std1, std2 = calcStats(tt_850v, tt_850v)
   
   # Saving things to pickle to save processing time.
-  save_pickle(pickle_folder, per, 'dt_925', t_test, p, mean1, std1, mean2, std2)
+  save_pickle(pickle_folder, per, 'tt_850', t_test, p, mean1, std1, mean2, std2)
 
-  t_test, p, mean1, mean2, std1, std2 = calcStats(dt_850, dt_850v)
+  t_test, p, mean1, mean2, std1, std2 = calcStats(tt_925v, tt_925v)
   
   # Saving things to pickle to save processing time.
-  save_pickle(pickle_folder, per, 'dt_850', t_test, p, mean1, std1, mean2, std2)
+  save_pickle(pickle_folder, per, 'tt_925', t_test, p, mean1, std1, mean2, std2)
+
+  t_test, p, mean1, mean2, std1, std2 = calcStats(tt_t2mv, tt_t2mv)
+  
+  # Saving things to pickle to save processing time.
+  save_pickle(pickle_folder, per, 't2m', t_test, p, mean1, std1, mean2, std2)
+
+  #t_test, p, mean1, mean2, std1, std2 = calcStats(dt_925, dt_925v)
+  
+  # Saving things to pickle to save processing time.
+  #save_pickle(pickle_folder, per, 'dt_925', t_test, p, mean1, std1, mean2, std2)
+
+  #t_test, p, mean1, mean2, std1, std2 = calcStats(dt_850, dt_850v)
+  
+  # Saving things to pickle to save processing time.
+  #save_pickle(pickle_folder, per, 'dt_850', t_test, p, mean1, std1, mean2, std2)
 
   #t_test, p, mean1, mean2, std1, std2 = calcStats(fq_925, fq_925v)
   #print(fq_925.shape)
@@ -228,15 +250,15 @@ for per in period:
   # Saving things to pickle to save processing time.
   #save_pickle(pickle_folder, per, 'fq_850', t_test, p, mean1, std1, mean2, std2)
 
-  t_test, p, mean1, mean2, std1, std2 = calcStats(dtdz_925, dtdz_925v)
+  #t_test, p, mean1, mean2, std1, std2 = calcStats(dtdz_925, dtdz_925v)
   
   # Saving things to pickle to save processing time.
-  save_pickle(pickle_folder, per, 'dtdz_925', t_test, p, mean1, std1, mean2, std2)
+  #save_pickle(pickle_folder, per, 'dtdz_925', t_test, p, mean1, std1, mean2, std2)
 
-  t_test, p, mean1, mean2, std1, std2 = calcStats(dtdz_850, dtdz_850v)
+  #t_test, p, mean1, mean2, std1, std2 = calcStats(dtdz_850, dtdz_850v)
   
   # Saving things to pickle to save processing time.
-  save_pickle(pickle_folder, per, 'dtdz_850', t_test, p, mean1, std1, mean2, std2)
+  #save_pickle(pickle_folder, per, 'dtdz_850', t_test, p, mean1, std1, mean2, std2)
   
   #sig = p[p < 0.05]
 

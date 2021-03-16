@@ -121,6 +121,8 @@ for per in period:
     
     mean_gem = arq.variables[var.upper()][:]
 
+    print(mean_gem.shape)
+
   # Opening the files
     per2 = str(per[0]).replace('(', '_').replace(')', '_').replace(',', '_').replace(' ', '_')
     #print('{0}/{4}_t_test_GEM-ERA_minus_AIRS_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var))
@@ -130,7 +132,7 @@ for per in period:
     #std_gem = pickle.load( open('{0}/{4}_std_GEM-ERA_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var), "rb"))
     mean_airs = pickle.load( open('{0}/{4}_mean_AIRS_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var), "rb"))
     #std_airs = pickle.load( open('{0}/{4}_std_AIRS_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var), "rb"))
-    
+    print(mean_airs.shape)
 #    print(mean_airs.shape)
 #    print(mean_airs)
     #sig = p.copy()

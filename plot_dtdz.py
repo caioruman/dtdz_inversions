@@ -101,9 +101,9 @@ period = ["DJF", "JJA"]#, 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'
 period = [(12, 1, 2), (6, 7, 8)]
 period = [[(12, 1, 2), "DJF"], [(6, 7, 8), "JJA"]]
 # lat lon
-arq = Dataset('/pixel/project01/cruman/ModelData/GEM_SIMS/PanArctic_0.5d_ERAINT_NOCTEM_RUN/2014/Inversion_201412.nc','r')
-lats2d = arq.variables['lat'][:]
-lons2d = arq.variables['lon'][:]
+#arq = Dataset('/pixel/project01/cruman/ModelData/GEM_SIMS/PanArctic_0.5d_ERAINT_NOCTEM_RUN/2014/Inversion_201412.nc','r')
+#lats2d = arq.variables['lat'][:]
+#lons2d = arq.variables['lon'][:]
 
 dic = '/pixel/project01/cruman/ModelData/GEM_SIMS/PanArctic_0.5d_ERAINT_NOCTEM_RUN'
 
@@ -120,7 +120,9 @@ for per in period:
   for var in vars:
     
     mean_gem = arq.variables[var][:]
-    
+    lats2d = arq.variables['lat'][:]
+    lons2d = arq.variables['lon'][:]
+
   # Opening the files
     per2 = str(per[0]).replace('(', '_').replace(')', '_').replace(',', '_').replace(' ', '_')
     #print('{0}/{4}_t_test_GEM-ERA_minus_AIRS_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var))

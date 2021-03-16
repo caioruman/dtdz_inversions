@@ -105,22 +105,31 @@ arq = Dataset('/pixel/project01/cruman/ModelData/GEM_SIMS/PanArctic_0.5d_ERAINT_
 lats2d = arq.variables['lat'][:]
 lons2d = arq.variables['lon'][:]
 
+dic = '/pixel/project01/cruman/ModelData/GEM_SIMS/PanArctic_0.5d_ERAINT_NOCTEM_RUN'
+
 from matplotlib.colors import  ListedColormap
 # Open the monthly files
-vars = ['dt_925', 'dt_850', 'dtdz_925', 'dtdz_850']
+vars = ['dt_925', 'dt_850', 'dtdz_925', 'dtdz_850', 'tt_850', 'tt_925', 't2m']
+
 #vars = ['fq_925', 'fq_850']
 for per in period:
+
+  # read GEM-ERA data:
+  arq = Dataset('{0}/AIRS.{1}.2003.2015.nc'.format(dic, per[1]))
+
   for var in vars:
-  
+    
+    mean_gem = arq.variables[var][:]
+    
   # Opening the files
     per2 = str(per[0]).replace('(', '_').replace(')', '_').replace(',', '_').replace(' ', '_')
-    print('{0}/{4}_t_test_GEM-ERA_minus_AIRS_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var))
-    t_test = pickle.load( open('{0}/{4}_t_test_GEM-ERA_minus_AIRS_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var), "rb"))
-    p = pickle.load( open('{0}/{4}_p_GEM-ERA_minus_AIRS_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var), "rb"))
-    mean_gem = pickle.load( open('{0}/{4}_mean_GEM-ERA_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var), "rb"))
-    std_gem = pickle.load( open('{0}/{4}_std_GEM-ERA_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var), "rb"))
+    #print('{0}/{4}_t_test_GEM-ERA_minus_AIRS_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var))
+    #t_test = pickle.load( open('{0}/{4}_t_test_GEM-ERA_minus_AIRS_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var), "rb"))
+    #p = pickle.load( open('{0}/{4}_p_GEM-ERA_minus_AIRS_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var), "rb"))
+    #mean_gem = pickle.load( open('{0}/{4}_mean_GEM-ERA_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var), "rb"))
+    #std_gem = pickle.load( open('{0}/{4}_std_GEM-ERA_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var), "rb"))
     mean_airs = pickle.load( open('{0}/{4}_mean_AIRS_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var), "rb"))
-    std_airs = pickle.load( open('{0}/{4}_std_AIRS_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var), "rb"))
+    #std_airs = pickle.load( open('{0}/{4}_std_AIRS_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var), "rb"))
     
 #    print(mean_airs.shape)
 #    print(mean_airs)
@@ -146,9 +155,9 @@ for per in period:
       if per[1] == "JJA":
         values = np.linspace(-4.5, 4.5, len(colors)+1)
       mean_gem = mean_gem*100   # original units: K/dm
-      std_gem = std_gem*100
+      #std_gem = std_gem*100
       mean_airs = mean_airs*1000 # original units: K/m
-      std_airs = std_airs*1000
+      #std_airs = std_airs*1000
     else:
       values = np.linspace(-100, 100, len(colors)+1)
       mean_gem = mean_gem*100
@@ -188,29 +197,29 @@ for per in period:
     plotMaps_pcolormesh(mean_airs, figName, values, cmap, lons2d, lats2d)
 
     # Standard Deviation and Coefficient of Variation
-    values = np.arange(0, 11, 1)
+    # values = np.arange(0, 11, 1)
 
-    figName = "fig_{0}_{1}_{2}_stdGEM".format(datai, var, per[1])
+    # figName = "fig_{0}_{1}_{2}_stdGEM".format(datai, var, per[1])
     
-    plotMaps_pcolormesh(std_gem, figName, values, cmap, lons2d, lats2d)
+    # plotMaps_pcolormesh(std_gem, figName, values, cmap, lons2d, lats2d)
 
-    values = np.arange(0, 11, 1)
+    # values = np.arange(0, 11, 1)
 
-    figName = "fig_{0}_{1}_{2}_stdAIRS".format(datai, var, per[1])
-    plotMaps_pcolormesh(std_airs, figName, values, cmap, lons2d, lats2d)
+    # figName = "fig_{0}_{1}_{2}_stdAIRS".format(datai, var, per[1])
+    # plotMaps_pcolormesh(std_airs, figName, values, cmap, lons2d, lats2d)
 
-    values = np.arange(0, 2.1, 0.2)
+    # values = np.arange(0, 2.1, 0.2)
 
-    figName = "fig_{0}_{1}_{2}_CVGEM".format(datai, var, per[1])
+    # figName = "fig_{0}_{1}_{2}_CVGEM".format(datai, var, per[1])
 
-    plotMaps_pcolormesh(std_gem/mean_gem, figName, values, cmap, lons2d, lats2d)
+    # plotMaps_pcolormesh(std_gem/mean_gem, figName, values, cmap, lons2d, lats2d)
 
-    values = np.arange(0, 2.1, 0.2)
+    # values = np.arange(0, 2.1, 0.2)
 
-    figName = "fig_{0}_{1}_{2}_CVAIRS".format(datai, var, per[1])
-    plotMaps_pcolormesh(std_airs/mean_airs, figName, values, cmap, lons2d, lats2d)
+    # figName = "fig_{0}_{1}_{2}_CVAIRS".format(datai, var, per[1])
+    # plotMaps_pcolormesh(std_airs/mean_airs, figName, values, cmap, lons2d, lats2d)
 
-   
+  arq.close()
     # plotting std
   
         #

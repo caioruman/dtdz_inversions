@@ -119,7 +119,7 @@ for per in period:
 
   for var in vars:
     
-    mean_gem = arq.variables[var.upper()][:]
+    mean_gem = arq.variables[var.upper()][:][0,:,:]
 
     print(mean_gem.shape)
 

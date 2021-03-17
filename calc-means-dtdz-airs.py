@@ -180,8 +180,13 @@ for per in period:
 
       if initV:
 
- #       fq_925v = arq.variables['FQ_925'][:][0]
- #       fq_850v = arq.variables['FQ_850'][:][0]
+        fq_925v = arq.variables['FQ_925'][:][0]
+        fq_925v = fq_925v[np.newaxis,:,:]
+        fq_850v = arq.variables['FQ_850'][:][0]
+        fq_850v = fq_850v[np.newaxis,:,:]
+
+        #print(fq_925v.shape)
+        #sys.exit()
         #dt_925v = arq.variables['DT_925'][:]
         #dt_850v = arq.variables['DT_850'][:]
         #dtdz_925v = arq.variables['DTDZ_925'][:]
@@ -190,12 +195,20 @@ for per in period:
         tt_925v = arq.variables['TT_925'][:]
         tt_t2mv = arq.variables['T2M'][:]
 
+        print(fq_850v)
+        print(fq_850v.shape)
+
         initV = False
 
       else:
 
- #       fq_925v = np.vstack((arq.variables['FQ_925'][:][0], fq_925v))
- #       fq_850v = np.vstack((arq.variables['FQ_850'][:][0], fq_850v))
+        aux = arq.variables['FQ_925'][:][0]
+        aux = aux[np.newaxis,:,:]
+        fq_925v = np.vstack((aux, fq_925v))
+
+        aux = arq.variables['FQ_850'][:][0]
+        aux = aux[np.newaxis,:,:]
+        fq_850v = np.vstack((aux, fq_850v))
         #dt_925v = np.vstack((arq.variables['DT_925'][:], dt_925v ))
         #dt_850v = np.vstack((arq.variables['DT_850'][:], dt_850v))
         #dtdz_925v = np.vstack((arq.variables['DTDZ_925'][:], dtdz_925v))
@@ -212,20 +225,20 @@ for per in period:
     
 #      sys.exit()
 
-  t_test, p, mean1, mean2, std1, std2 = calcStats(tt_850v, tt_850v)
+#  t_test, p, mean1, mean2, std1, std2 = calcStats(tt_850v, tt_850v)
   
   # Saving things to pickle to save processing time.
-  save_pickle(pickle_folder, per, 'tt_850', t_test, p, mean1, std1, mean2, std2)
+#  save_pickle(pickle_folder, per, 'tt_850', t_test, p, mean1, std1, mean2, std2)
 
-  t_test, p, mean1, mean2, std1, std2 = calcStats(tt_925v, tt_925v)
+#  t_test, p, mean1, mean2, std1, std2 = calcStats(tt_925v, tt_925v)
   
   # Saving things to pickle to save processing time.
-  save_pickle(pickle_folder, per, 'tt_925', t_test, p, mean1, std1, mean2, std2)
+#  save_pickle(pickle_folder, per, 'tt_925', t_test, p, mean1, std1, mean2, std2)
 
-  t_test, p, mean1, mean2, std1, std2 = calcStats(tt_t2mv, tt_t2mv)
+#  t_test, p, mean1, mean2, std1, std2 = calcStats(tt_t2mv, tt_t2mv)
   
   # Saving things to pickle to save processing time.
-  save_pickle(pickle_folder, per, 't2m', t_test, p, mean1, std1, mean2, std2)
+#  save_pickle(pickle_folder, per, 't2m', t_test, p, mean1, std1, mean2, std2)
 
   #t_test, p, mean1, mean2, std1, std2 = calcStats(dt_925, dt_925v)
   
@@ -237,18 +250,19 @@ for per in period:
   # Saving things to pickle to save processing time.
   #save_pickle(pickle_folder, per, 'dt_850', t_test, p, mean1, std1, mean2, std2)
 
-  #t_test, p, mean1, mean2, std1, std2 = calcStats(fq_925, fq_925v)
+  t_test, p, mean1, mean2, std1, std2 = calcStats(fq_925v, fq_925v)
   #print(fq_925.shape)
   #print(mean1)
-  #print(mean2)
+  print(mean2)
   
   # Saving things to pickle to save processing time.
-  #save_pickle(pickle_folder, per, 'fq_925', t_test, p, mean1, std1, mean2, std2)
+  save_pickle(pickle_folder, per, 'fq_925', t_test, p, mean1, std1, mean2, std2)
 
-  #t_test, p, mean1, mean2, std1, std2 = calcStats(fq_850, fq_850v)
+
+  t_test, p, mean1, mean2, std1, std2 = calcStats(fq_850v, fq_850v)
   
   # Saving things to pickle to save processing time.
-  #save_pickle(pickle_folder, per, 'fq_850', t_test, p, mean1, std1, mean2, std2)
+  save_pickle(pickle_folder, per, 'fq_850', t_test, p, mean1, std1, mean2, std2)
 
   #t_test, p, mean1, mean2, std1, std2 = calcStats(dtdz_925, dtdz_925v)
   

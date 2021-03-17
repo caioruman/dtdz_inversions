@@ -112,7 +112,7 @@ from matplotlib.colors import  ListedColormap
 vars = ['dt_925', 'dt_850', 'dtdz_925', 'dtdz_850', 'tt_850', 'tt_925', 't2m']
 vars = ['tt_850', 'tt_925', 't2m']
 
-#vars = ['fq_925', 'fq_850']
+vars = ['fq_925', 'fq_850']
 for per in period:
 
   # read GEM-ERA data:
@@ -133,7 +133,7 @@ for per in period:
     #std_gem = pickle.load( open('{0}/{4}_std_GEM-ERA_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var), "rb"))
     mean_airs = pickle.load( open('{0}/{4}_mean_AIRS_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var), "rb"))
     #std_airs = pickle.load( open('{0}/{4}_std_AIRS_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var), "rb"))
-    print(mean_airs.shape)
+    print(mean_airs)
 #    print(mean_airs.shape)
 #    print(mean_airs)
     #sig = p.copy()
@@ -165,12 +165,16 @@ for per in period:
       values = np.linspace(-9, 9, len(colors)+1)
     else:
       values = np.linspace(-100, 100, len(colors)+1)
+      values = np.arange(-60,61,10)
       mean_gem = mean_gem*100
       mean_airs = mean_airs*100
       print(mean_gem.shape)
       print(mean_airs.shape)
 
     data = mean_gem - mean_airs
+  
+    #data[data>59] = np.nan
+    #data[data<-59] = np.nan
 
     cmap = mpl.colors.ListedColormap(colors)
 

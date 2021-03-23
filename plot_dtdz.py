@@ -17,6 +17,8 @@ from mpl_toolkits.basemap import maskoceans
 from netCDF4 import Dataset
 
 import pickle
+#from colormath.color_objects import *
+#from colormath.color_conversions import convert_color
 
 
 datai = 2003
@@ -112,7 +114,7 @@ from matplotlib.colors import  ListedColormap
 vars = ['dt_925', 'dt_850', 'dtdz_925', 'dtdz_850', 'tt_850', 'tt_925', 't2m']
 vars = ['tt_850', 'tt_925', 't2m']
 
-vars = ['fq_925', 'fq_850']
+#vars = ['fq_925', 'fq_850']
 for per in period:
 
   # read GEM-ERA data:
@@ -133,7 +135,7 @@ for per in period:
     #std_gem = pickle.load( open('{0}/{4}_std_GEM-ERA_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var), "rb"))
     mean_airs = pickle.load( open('{0}/{4}_mean_AIRS_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var), "rb"))
     #std_airs = pickle.load( open('{0}/{4}_std_AIRS_{1}{2}_{3}.p'.format(pickle_folder, datai, dataf, per2, var), "rb"))
-    print(mean_airs)
+    #print(mean_airs)
 #    print(mean_airs.shape)
 #    print(mean_airs)
     #sig = p.copy()
@@ -146,6 +148,7 @@ for per in period:
     figName = "fig_{0}_{1}_{2}".format(datai, var, per[1])
     
     colors = ['#a50026', '#d73027', '#f46d43', '#fdae61', '#fee090', "#ffffff", "#ffffff", '#e0f3f8', '#abd9e9', '#74add1', '#4575b4', '#313695']
+    colors = ['#313695','#4575b4','#74add1','#abd9e9','#e0f3f8',"#ffffff", "#ffffff",'#fee090','#fdae61','#f46d43','#d73027', '#a50026']
   
     #v = abs(max(np.nanmax(data), np.nanmin(data), key=abs))
 
@@ -163,6 +166,7 @@ for per in period:
       #std_airs = std_airs*1000
     elif (var == "t2m" or var == "tt_850" or var == "tt_925"):
       values = np.linspace(-9, 9, len(colors)+1)
+      values = np.arange(-6, 7, 1)
     else:
       values = np.linspace(-100, 100, len(colors)+1)
       values = np.arange(-60,61,10)
@@ -193,17 +197,23 @@ for per in period:
       #mean_gem = mean_gem*100   # original units: K/dm
       #mean_airs = mean_airs*1000 # original units: K/m
     elif (var == "t2m" or var == "tt_850" or var == "tt_925"):
-      values = np.arange(263,284,2)
+      if (per[1] == "DJF"):
+        values = np.arange(-39,13,3)
+      else:
+        values = np.arange(-10,22,2)
     else:
       values = np.arange(0,101,10)
       colors = ['#ffffff', '#f7fcf0','#e0f3db','#ccebc5','#a8ddb5','#7bccc4','#4eb3d3','#2b8cbe','#0868ac','#084081']
 
     cmap = mpl.colors.ListedColormap(colors)
+    cmap = mpl.cm.get_cmap('viridis', len(values))
+    mean_gem = mean_gem - 273.15
 
     figName = "fig_{0}_{1}_{2}_meanGEM".format(datai, var, per[1])
     
     plotMaps_pcolormesh(mean_gem, figName, values, cmap, lons2d, lats2d)
 
+    mean_airs = mean_airs - 273.15
     figName = "fig_{0}_{1}_{2}_meanAIRS".format(datai, var, per[1])
     plotMaps_pcolormesh(mean_airs, figName, values, cmap, lons2d, lats2d)
 

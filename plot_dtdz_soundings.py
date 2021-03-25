@@ -156,7 +156,7 @@ def geo_idx(dd, dd_array, type="lat"):
 
 def getDataModel(mean_gem, std_gem, lat, lon, lats2d, lons2d):
 
-  points = geo_idx([lat, lon], [lats2d, lons2d])
+  points = geo_idx([lat, lon], np.array([lats2d, lons2d]))
 
   m_data = mean_gem[points[0], points[1]]
   std_data = std_gem[points[0], points[1]]
@@ -241,7 +241,7 @@ for per in period:
       data_station = []
       data_model = []
       data_model_std = []
-      print(df.head())
+      #print(df.head())
       for index, row in df[df['season'] == per[1]].iterrows():
         #print(index, row)
         lat.append(row['lat'])

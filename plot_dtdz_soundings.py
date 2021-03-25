@@ -241,6 +241,7 @@ for per in period:
       data_station = []
       data_model = []
       data_model_std = []
+      print(df.head())
       for index, row in df[df['season'] == per[1]].iterrows():
         #print(index, row)
         lat.append(row['lat'])

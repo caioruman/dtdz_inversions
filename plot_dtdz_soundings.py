@@ -161,8 +161,8 @@ def getDataModel(mean_gem, std_gem, lat, lon, lats2d, lons2d):
   m_data = mean_gem[points[0], points[1]]
   std_data = std_gem[points[0], points[1]]
 
-  print(lat, lon, lats2d[points[0], points[1]], lons2d[points[0], points[1]])
-  sys.exit()
+  #print(lat, lon, lats2d[points[0], points[1]], lons2d[points[0], points[1]])
+  #sys.exit()
 
   return m_data, std_data
 

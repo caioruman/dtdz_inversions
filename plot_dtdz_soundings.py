@@ -25,7 +25,7 @@ import pickle
 datai = 2003
 dataf = 2015
 
-def plotMaps_pcolormesh(data, figName, values, mapa, lons2d, lats2d):
+def plotMaps_pcolormesh(data, figName, values, mapa, lons2d, lats2d, lat, lon, data_model, data_station):
   '''
   fnames: List of filenames. Usually 2 (clim mean and future projection)
   varnames: list of variables to plot
@@ -57,17 +57,13 @@ def plotMaps_pcolormesh(data, figName, values, mapa, lons2d, lats2d):
   #b.drawparallels(parallels,labels=[True,True,True,True], fontsize=16)
   meridians = np.arange(0.,351.,45.)
   b.drawmeridians(meridians,labels=[True,True,True,True], fontsize=16)
-#   for item in stations:
-# #        print(item)
-# #        print(stations)
-# #        print
-#     x, y = b(item[1], item[0])
-#     if var == "DT" or var == "DT0" or var == "DT12":
-#       vv = item[2]
-#     else:
-#       vv = item[3]
-
-#     img = b.scatter(x, y, c=vv, s=80, cmap=mapa, norm=bn, edgecolors='black')
+  for l1, l2, item1, item2 in zip(lat, lon, data_model, data_station):
+ #        print(item)
+ #        print(stations)
+ #        print
+    x, y = b(l2, l1)
+    vv = item1 - item2
+    img = b.scatter(x, y, c=vv, s=80, cmap=mapa, norm=bn, edgecolors='black')
 
   plt.subplots_adjust(top=0.75, bottom=0.25)
 

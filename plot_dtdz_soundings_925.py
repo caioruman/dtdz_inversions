@@ -72,7 +72,7 @@ def plotMaps_pcolormesh(data, figName, values, mapa, lons2d, lats2d, lat, lon, d
       vv.append(item)
     #img = b.scatter(x, y, c=vv, s=80, cmap=mapa, norm=bn, edgecolors='black')
 #    print(vv)
-    img = b.scatter(xx, yy, c=vv, cmap=mapa, s=180, edgecolors='black', zorder=2, vmin=values[0], vmax=values[-1], norm=bn)
+    img = b.scatter(xx, yy, c=vv, cmap=mapa, s=220, edgecolors='black', zorder=2, vmin=values[0], vmax=values[-1], norm=bn)
 
   plt.subplots_adjust(top=0.75, bottom=0.25)
 
@@ -116,7 +116,7 @@ lons2d = arq.variables['lon'][:]
 dic = '/pixel/project01/cruman/ModelData/GEM_SIMS/PanArctic_0.5d_ERAINT_NOCTEM_RUN'
 
 # read station data
-df = pd.read_csv('inversion_results.csv', sep=';')
+df = pd.read_csv('inversion_results_925.csv', sep=';')
 df_lat = pd.read_csv('latlonlist_v2.txt', sep=';', header=None, names=['id', 'name', 'lat1', 'lat', 'lon1', 'lon'])
 
 for index, row in df_lat.iterrows():
@@ -133,7 +133,7 @@ df = df.dropna()
 # Open the monthly files
 vars = ['dt_925', 'dt_850', 'dtdz_925', 'dtdz_850', 'tt_850', 'tt_925', 't2m']
 vars = ['tt_850', 'tt_925', 't2m', 'fq_850']
-vars = ['dt_850', 'dtdz_850', 'tt_850', 'fq_850']
+vars = ['dt_925', 'dtdz_925', 'tt_925', 'fq_925']
 
 def geo_idx(dd, dd_array, type="lat"):
   '''
@@ -223,13 +223,13 @@ for per in period:
     #v = abs(max(np.nanmax(data), np.nanmin(data), key=abs))
 
     if (var == "dt_925" or var == "dt_850"):
-      values = np.linspace(-6, 6, len(colors)+1)
+      values = np.linspace(-9, 9, len(colors)+1)
       svar = 'deltaT'
       if per[1] == "JJA":
-        values = np.linspace(-3, 3, len(colors)+1)
+        values = np.linspace(-4.5, 4.5, len(colors)+1)
     elif (var == "dtdz_925" or var == "dtdz_850"):
       svar = 'dtdz'
-      values = np.linspace(-4.5, 4.5, len(colors)+1)
+      values = np.linspace(-6, 6, len(colors)+1)
       if per[1] == "JJA":
         values = np.linspace(-3, 3, len(colors)+1)
       mean_gem = mean_gem*100   # original units: K/dm
@@ -245,8 +245,8 @@ for per in period:
       values = np.arange(-60,61,10)
       mean_gem = mean_gem*100
       mean_airs = mean_airs*100
-      print(mean_gem.shape)
-      print(mean_airs.shape)
+      #print(mean_gem.shape)
+      #print(mean_airs.shape)
 
     # Fill lists with station data.
     # Model minus Station data
@@ -279,8 +279,11 @@ for per in period:
       cmap = mpl.colors.ListedColormap(colors)
       
       data[mask == 1] = np.nan
-      print(data)
+      #print(data)
       data_points = np.array(data_model) - np.array(data_station)
+      #print(data_points)
+      #print(data_model)
+      #print(data_station)
       plotMaps_pcolormesh(data, figName, values, cmap, lons2d, lats2d, lat, lon, data_points)
     else:
       data = mean_gem - mean_airs
@@ -299,8 +302,8 @@ for per in period:
     elif (var == "dtdz_925" or var == "dtdz_850"):
       values = np.arange(0,13,1.5)
       cmap = mpl.colors.ListedColormap(colors)
-      mean_gem = mean_gem*100   # original units: K/dm
-      mean_airs = mean_airs*1000 # original units: K/m
+#      mean_gem = mean_gem*100   # original units: K/dm
+#      mean_airs = mean_airs*1000 # original units: K/m
     elif (var == "t2m" or var == "tt_850" or var == "tt_925"):
       if (per[1] == "DJF"):
         values = np.arange(-39,13,3)

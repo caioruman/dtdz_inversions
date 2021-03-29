@@ -91,6 +91,7 @@ main_folder = "/pixel/project01/cruman/ModelData/GEM_SIMS"
 #main_folder = "/home/caioruman/Documents/McGill/NC/dtdz/"
 val_folder = "/pixel/project01/cruman/Data/AIRS/AIRS_daily/Inversion"
 pickle_folder = "/pixel/project01/cruman/Data/Pickle"
+era_folder = "/pixel/project01/shared/Data/ERA-Interim/Multi_year_means"
 
 # Sounding Data
 #sounding_file = "/home/cruman/project/cruman/Scripts/soundings/inv_list_DJF.dat"
@@ -182,7 +183,22 @@ for per in period:
 
     cmap = mpl.colors.ListedColormap(colors)
 
-    plotMaps_pcolormesh(data, figName, values, cmap, lons2d, lats2d)
+    #plotMaps_pcolormesh(data, figName, values, cmap, lons2d, lats2d)
+
+    if (var == "t2m"):
+      era = Dataset("{0}/ERA-Interim-monthly_{1}_{2}-{3}-GEM.nc".format(era_folder, per[1], datai, dataf))
+
+      t2m_era = np.squeeze(era.variables["t2m"][:]) 
+    
+      era.close()
+ 
+      values = np.arange(-6, 7, 1)
+
+      data = mean_gem - t2m_era
+
+      figName = "fig_GEM_minus_ERA_{0}_{1}_{2}".format(datai, var, per[1])
+
+      plotMaps_pcolormesh(data, figName, values, cmap, lons2d, lats2d)     
 
     # Plotting the values
 
@@ -201,6 +217,8 @@ for per in period:
         values = np.arange(-39,13,3)
       else:
         values = np.arange(-10,22,2)
+
+      values = np.arange(-30,23,2)
     else:
       values = np.arange(0,101,10)
       colors = ['#ffffff', '#f7fcf0','#e0f3db','#ccebc5','#a8ddb5','#7bccc4','#4eb3d3','#2b8cbe','#0868ac','#084081']

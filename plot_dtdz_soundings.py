@@ -176,10 +176,12 @@ mm = Dataset('/pixel/project01/cruman/Data/AIRS/poor_man_mask_crcm5.nc')
 
 aux = np.squeeze(mm.variables["tmp"][:])
 aux = aux.filled(-999)
+aux2 = np.squeeze(mm.variables["lat"][:])
             #print(result.shape, result)
 mask = np.zeros([aux.shape[0], aux.shape[1]])
 
 #mask[aux != -999] = 1
+mask[aux2 >= 86] = 1
 mm.close()
 
 #vars = ['fq_925', 'fq_850']
@@ -299,8 +301,8 @@ for per in period:
     elif (var == "dtdz_925" or var == "dtdz_850"):
       values = np.arange(0,13,1.5)
       cmap = mpl.colors.ListedColormap(colors)
-      mean_gem = mean_gem*100   # original units: K/dm
-      mean_airs = mean_airs*1000 # original units: K/m
+#      mean_gem = mean_gem*100   # original units: K/dm
+#      mean_airs = mean_airs*1000 # original units: K/m
     elif (var == "t2m" or var == "tt_850" or var == "tt_925"):
       if (per[1] == "DJF"):
         values = np.arange(-39,13,3)
@@ -309,6 +311,7 @@ for per in period:
 
       cmap = mpl.cm.get_cmap('viridis', len(values))
       mean_gem = mean_gem - 273.15
+      mean_airs = mean_airs - 273.15
     else:
       values = np.arange(0,101,10)
       colors = ['#ffffff', '#f7fcf0','#e0f3db','#ccebc5','#a8ddb5','#7bccc4','#4eb3d3','#2b8cbe','#0868ac','#084081']
@@ -318,7 +321,7 @@ for per in period:
     data_points = data_station
     plotMaps_pcolormesh(mean_gem, figName, values, cmap, lons2d, lats2d, lat, lon, data_points)
 
-    mean_airs = mean_airs - 273.15
+    mean_airs = mean_airs
     figName = "fig_{0}_{1}_{2}_meanAIRS".format(datai, var, per[1])
     plotMaps_pcolormesh(mean_airs, figName, values, cmap, lons2d, lats2d, lat, lon, data_points)
 

@@ -56,7 +56,7 @@ def plotMaps_pcolormesh(data, figName, values, mapa, lons2d, lats2d, lat, lon, d
   # labels = [left,right,top,bottom]
   #b.drawparallels(parallels,labels=[True,True,True,True], fontsize=16)
   meridians = np.arange(0.,351.,45.)
-  b.drawmeridians(meridians,labels=[True,True,True,True], fontsize=16)
+  b.drawmeridians(meridians,labels=[True,True,True,True], fontsize=16, zorder=1)
 
   xx = []
   yy = []
@@ -72,7 +72,7 @@ def plotMaps_pcolormesh(data, figName, values, mapa, lons2d, lats2d, lat, lon, d
       vv.append(item)
     #img = b.scatter(x, y, c=vv, s=80, cmap=mapa, norm=bn, edgecolors='black')
 #    print(vv)
-    img = b.scatter(xx, yy, c=vv, cmap=mapa, s=220, edgecolors='black', zorder=2, vmin=values[0], vmax=values[-1], norm=bn)
+    img = b.scatter(xx, yy, c=vv, cmap=mapa, s=300, edgecolors='black', linewidth=3,  zorder=2, vmin=values[0], vmax=values[-1], norm=bn)
 
   plt.subplots_adjust(top=0.75, bottom=0.25)
 
@@ -179,7 +179,10 @@ aux = aux.filled(-999)
             #print(result.shape, result)
 mask = np.zeros([aux.shape[0], aux.shape[1]])
 
-#mask[aux != -999] = 1
+aux2 = np.squeeze(mm.variables["lat"][:])
+
+mask[aux != -999] = 1
+mask[aux2 >= 86] = 1
 mm.close()
 
 #vars = ['fq_925', 'fq_850']
@@ -223,10 +226,10 @@ for per in period:
     #v = abs(max(np.nanmax(data), np.nanmin(data), key=abs))
 
     if (var == "dt_925" or var == "dt_850"):
-      values = np.linspace(-9, 9, len(colors)+1)
+      values = np.linspace(-6, 6, len(colors)+1)
       svar = 'deltaT'
       if per[1] == "JJA":
-        values = np.linspace(-4.5, 4.5, len(colors)+1)
+        values = np.linspace(-3, 3, len(colors)+1)
     elif (var == "dtdz_925" or var == "dtdz_850"):
       svar = 'dtdz'
       values = np.linspace(-6, 6, len(colors)+1)
@@ -312,6 +315,7 @@ for per in period:
 
       cmap = mpl.cm.get_cmap('viridis', len(values))
       mean_gem = mean_gem - 273.15
+      mean_airs = mean_airs - 273.15
     else:
       values = np.arange(0,101,10)
       colors = ['#ffffff', '#f7fcf0','#e0f3db','#ccebc5','#a8ddb5','#7bccc4','#4eb3d3','#2b8cbe','#0868ac','#084081']
@@ -321,7 +325,7 @@ for per in period:
     data_points = data_station
     plotMaps_pcolormesh(mean_gem, figName, values, cmap, lons2d, lats2d, lat, lon, data_points)
 
-    mean_airs = mean_airs - 273.15
+#    mean_airs = mean_airs - 273.15
     figName = "fig_{0}_{1}_{2}_meanAIRS".format(datai, var, per[1])
     plotMaps_pcolormesh(mean_airs, figName, values, cmap, lons2d, lats2d, lat, lon, data_points)
 
@@ -351,6 +355,6 @@ for per in period:
   arq.close()
     # plotting std
 
-df.to_csv('station_values_with_model.csv', index=False)  
+df.to_csv('station_values_with_model_925.csv', index=False)  
         #
     

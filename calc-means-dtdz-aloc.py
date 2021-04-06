@@ -111,11 +111,9 @@ exp = ["PanArctic_0.5d_CanHisto_NOCTEM_RUN", "PanArctic_0.5d_CanHisto_NOCTEM_R2"
        "PanArctic_0.5d_CanHisto_NOCTEM_R3", "PanArctic_0.5d_CanHisto_NOCTEM_R4",
        "PanArctic_0.5d_CanHisto_NOCTEM_R5"]
 
-
 exprcp45 = ["PanArctic_0.5d_CanRCP45_NOCTEM_RUN", "PanArctic_0.5d_CanRCP45_NOCTEM_R2",
        "PanArctic_0.5d_CanRCP45_NOCTEM_R3", "PanArctic_0.5d_CanRCP45_NOCTEM_R4",
        "PanArctic_0.5d_CanRCP45_NOCTEM_R5"]
-
 
 main_folder = "/pixel/project01/cruman/ModelData/GEM_SIMS"
 #main_folder = "/home/caioruman/Documents/McGill/NC/dtdz/"
@@ -140,7 +138,7 @@ rcp45 = True
 var = ["FQ_925", "FQ_850", "DT_925", "DT_850", "DTDZ_925", "DTDZ_850"]
 var = ["FQ_925", "DT_925", "DTDZ_925"]
 var = ["DT_925", "DTDZ_925"]
-var = ["FQ_925"]
+#var = ["DTDZ_925"]
 
 from matplotlib.colors import  ListedColormap
 # Open the monthly files
@@ -151,6 +149,17 @@ for vv in var:
 
     print(vv, per)
     init = True
+
+    # for dt and dtdz only
+    # 8 data per day. 3 months. DJF: 31, 31, 28 = 90 days a year. JJA: 30, 31, 31 = 92 days a year. times 30 years
+    # 5 ensembles. DJF: 108000; JJA: 110400
+    if per[1] == "JJA":
+      aa = 110400
+    else:
+      aa = 108000
+    aux_full = np.zeros([aa,172,172])
+    aux_full_f = np.zeros([aa,172,172])
+    j = 0
 
     #for year in range(datai, dataf+1):
     for i in range(0, 30):
@@ -164,11 +173,12 @@ for vv in var:
 #        for ee in exp:
         for ee in range(0,5):
 
-
+          
           ff = "{0}/{3}/{1}/Inversion_{1}{2:02d}.nc".format(main_folder, year, month, exp[ee])
+
           if rcp45:
             fff = "{0}/{3}/{1}/Inversion_{1}{2:02d}.nc".format(main_folder, yearf, month, exprcp45[ee])
-          else:
+          else:  
             fff = "{0}/{3}/{1}/Inversion_{1}{2:02d}.nc".format(main_folder, yearf, month, exp[ee])
           print(ff)
   #        sys.exit()
@@ -176,41 +186,29 @@ for vv in var:
 
           arqf = Dataset(fff, 'r')
         
-          if init:
+          if (vv == "FQ_925" or vv == "FQ_850"):
 
-            if (vv == "FQ_925" or vv == "FQ_850"):
+            aux = arq.variables[vv][:][0]
+            aux = aux[np.newaxis,:,:]
 
-              aux = arq.variables[vv][:][0]
-              aux = aux[np.newaxis,:,:]
-
-              aux_f = arqf.variables[vv][:][0]
-              aux_f = aux_f[np.newaxis, :, :]
-
-            else:
-              aux = arq.variables[vv][:]
-  
-              aux_f = arqf.variables[vv][:]
-
-            lats2d = arq.variables['lat']
-            lons2d = arq.variables['lon']
-            init = False
+            aux_f = arqf.variables[vv][:][0]
+            aux_f = aux_f[np.newaxis, :, :]
 
           else:
+            aux = arq.variables[vv][:]
+  
+            aux_f = arqf.variables[vv][:]
+            
+          mm = aux.shape[0]
+          aux_full[j:j+mm,:,:] = aux
+          aux_full_f[j:j+mm,:,:] = aux_f
 
-            if (vv == "FQ_925" or vv == "FQ_850"):
-              aux1 = arq.variables[vv][:][0]
-              aux = np.vstack((aux1[np.newaxis,:,:], aux))
+          j = j + mm
+          #print(aux_f)
+          #print(aux_full_f[j-mm:j,:,:])
 
-              aux1 = arqf.variables[vv][:][0]
-              aux_f = np.vstack((aux1[np.newaxis,:,:], aux_f))
-
-            else:
-              aux = np.vstack((arq.variables[vv][:], aux))
-
-              aux_f = np.vstack((arqf.variables[vv][:], aux_f))
-
-
-          print(aux.shape)
+          lats2d = arq.variables['lat']
+          lons2d = arq.variables['lon']
 
           arq.close()
           arqf.close()

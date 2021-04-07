@@ -136,7 +136,7 @@ for per in period:
         values_diff = np.arange(-60,61,10)
         values = np.arange(0,101,10)
 
-        mean_gem = mean_gem*100
+        #mean_gem = mean_gem*100
         colors_mean = ['#ffffff','#ffffcc','#ffeda0','#fed976','#feb24c','#fd8d3c','#fc4e2a','#e31a1c','#bd0026','#800026']
 
       

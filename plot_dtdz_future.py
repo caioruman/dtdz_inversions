@@ -140,7 +140,7 @@ for per in period:
         colors_mean = ['#ffffff','#ffffcc','#ffeda0','#fed976','#feb24c','#fd8d3c','#fc4e2a','#e31a1c','#bd0026','#800026']
 
       
-      fig, axs = plt.subplots(3, 3, figsize=(14, 22), frameon=False, dpi=150)
+      fig, axs = plt.subplots(3, 3, figsize=(14*3, 22*3), frameon=False, dpi=150)
 
       #  (0,0) (cur_mean)  (1,0) (fut_mean_2040)  (2,0) (fut_mean_2070)
       #  (0,1) (cur_std )  (1,1) (fut_std )       (2,1) (fut_std)
@@ -165,8 +165,8 @@ for per in period:
       p_1976_2040[p_1976_2040 > 0.1] = np.nan
       p_1976_2070[p_1976_2070 > 0.1] = np.nan
 
-      fig = plotMaps_pcolormesh(future_2040, fig, axs[1,1], values, cmap, 'Std Values 2040:2069', lons2d, lats2d, p_1976_2040)
-      fig = plotMaps_pcolormesh(future_2070, fig, axs[2,1], values, cmap, 'Std Values 2070:2099', lons2d, lats2d, p_1976_2070)
+      fig = plotMaps_pcolormesh(future_2040, fig, axs[1,1], values, cmap, 'Std Values 2040:2069', lons2d, lats2d)
+      fig = plotMaps_pcolormesh(future_2070, fig, axs[2,1], values, cmap, 'Std Values 2070:2099', lons2d, lats2d)
 
       plt.subplots_adjust(top=0.75, bottom=0.25)
 

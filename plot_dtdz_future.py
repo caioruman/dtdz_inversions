@@ -122,10 +122,12 @@ for per in period:
       if (var == "DT_925" or var == "DT_850"):
         values_diff = np.linspace(-9, 9, len(colors_diff)+1)
         values = np.arange(0,13,1.5)
+        values_std = np.arange(0,6.5,1)
         if per[1] == "JJA":
           values_diff = np.linspace(-4.5, 4.5, len(colors_diff)+1)
       elif (var == "dtdz_925" or var == "dtdz_850"):
         values_diff = np.linspace(-9, 9, len(colors_diff)+1)
+        values_std = np.arange(0,6.5,1)
         if per[1] == "JJA":
           values_diff = np.linspace(-4.5, 4.5, len(colors_diff)+1)
         #mean_gem = mean_gem*100   # original units: K/dm
@@ -134,6 +136,7 @@ for per in period:
       else:
         # Frequency plots
         values_diff = np.arange(-60,61,10)
+        values_std = np.arange(0,13,1.5)
         values = np.arange(0,101,10)
 
         #mean_gem = mean_gem*100
@@ -165,8 +168,8 @@ for per in period:
       p_1976_2040[p_1976_2040 > 0.1] = np.nan
       p_1976_2070[p_1976_2070 > 0.1] = np.nan
 
-      fig = plotMaps_pcolormesh(future_2040, fig, axs[1,1], values, cmap, 'Std Values 2040:2069', lons2d, lats2d)
-      fig = plotMaps_pcolormesh(future_2070, fig, axs[2,1], values, cmap, 'Std Values 2070:2099', lons2d, lats2d)
+      fig = plotMaps_pcolormesh(future_2040, fig, axs[1,2], values, cmap, 'Std Values 2040:2069', lons2d, lats2d, p_1976_2040)
+      fig = plotMaps_pcolormesh(future_2070, fig, axs[2,2], values, cmap, 'Std Values 2070:2099', lons2d, lats2d, p_1976_2040)
 
       plt.subplots_adjust(top=0.75, bottom=0.25)
 

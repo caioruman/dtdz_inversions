@@ -168,8 +168,10 @@ for per in period:
       p_1976_2040[p_1976_2040 > 0.1] = np.nan
       p_1976_2070[p_1976_2070 > 0.1] = np.nan
 
-      fig = plotMaps_pcolormesh(future_2040, fig, axs[1,2], values, cmap, 'Std Values 2040:2069', lons2d, lats2d, p_1976_2040)
-      fig = plotMaps_pcolormesh(future_2070, fig, axs[2,2], values, cmap, 'Std Values 2070:2099', lons2d, lats2d, p_1976_2040)
+      cmap = mpl.colors.ListedColormap(colors_diff)
+
+      fig = plotMaps_pcolormesh(future_2040, fig, axs[1,2], values_diff, cmap, 'Std Values 2040:2069', lons2d, lats2d, p_1976_2040)
+      fig = plotMaps_pcolormesh(future_2070, fig, axs[2,2], values_diff, cmap, 'Std Values 2070:2099', lons2d, lats2d, p_1976_2040)
 
       plt.subplots_adjust(top=0.75, bottom=0.25)
 

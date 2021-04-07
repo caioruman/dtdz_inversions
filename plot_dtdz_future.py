@@ -157,9 +157,9 @@ for per in period:
       fig = plotMaps_pcolormesh(mean_2070, fig, axs[2,0], values, cmap, 'Mean Values 2070:2099', lons2d, lats2d)
 
       # Plotting STD
-      fig = plotMaps_pcolormesh(std_1976, fig, axs[0,1], values, cmap, 'Std Values Current Climate', lons2d, lats2d)
-      fig = plotMaps_pcolormesh(std_2040, fig, axs[1,1], values, cmap, 'Std Values 2040:2069', lons2d, lats2d)
-      fig = plotMaps_pcolormesh(std_2070, fig, axs[2,1], values, cmap, 'Std Values 2070:2099', lons2d, lats2d)
+      fig = plotMaps_pcolormesh(std_1976, fig, axs[0,1], values_std, cmap, 'Std Values Current Climate', lons2d, lats2d)
+      fig = plotMaps_pcolormesh(std_2040, fig, axs[1,1], values_std, cmap, 'Std Values 2040:2069', lons2d, lats2d)
+      fig = plotMaps_pcolormesh(std_2070, fig, axs[2,1], values_std, cmap, 'Std Values 2070:2099', lons2d, lats2d)
 
       # Plotting Differences
       future_2040 = mean_2040.filled(0) - mean_1976
